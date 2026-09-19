@@ -1,0 +1,58 @@
+<div class="kutt-auth-shell">
+  <div class="kutt-auth-brand">
+    <div class="kutt-crown">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M3 8l4 3 5-6 5 6 4-3-2 10H5L3 8z" fill="#ff3d82"/><circle cx="12" cy="19" r="1.4" fill="#ff3d82"/></svg>
+    </div>
+    <h1>KUTT</h1>
+    <p class="kutt-tagline">Tu belleza, en buenas manos</p>
+    <p class="kutt-desc">Reserva, compra y disfruta los mejores servicios de belleza y cuidado personal, cerca de ti.</p>
+  </div>
+
+  <div class="kutt-auth-panel">
+    <div class="kutt-auth-card">
+      <h2>Iniciar sesión</h2>
+
+      <div class="kutt-field">
+        <label>Correo electrónico o teléfono</label>
+        <input type="text" [(ngModel)]="correo" name="correo" placeholder="tucorreo@ejemplo.com">
+      </div>
+      <div class="kutt-field">
+        <label>Contraseña</label>
+        <input type="password" [(ngModel)]="password" name="password" placeholder="••••••••">
+      </div>
+
+      <p class="kutt-error" *ngIf="error()">{{ error() }}</p>
+
+      <button class="kutt-btn-primary" [disabled]="cargando()" (click)="entrar()">
+        {{ cargando() ? 'Entrando...' : 'Entrar' }}
+      </button>
+      <a class="kutt-forgot">¿Olvidaste tu contraseña?</a>
+
+      <div class="kutt-divider"><span>o continúa con</span></div>
+
+      <button class="kutt-btn-outline" (click)="continuarConGoogle()">Continuar con Google</button>
+      <button class="kutt-btn-outline" (click)="continuarConFacebook()">Continuar con Facebook</button>
+
+      <p class="kutt-switch">
+        ¿No tienes cuenta?
+        <a (click)="toggleRoles()">Regístrate</a>
+      </p>
+
+      <div class="kutt-roles" *ngIf="mostrarRoles()">
+        <p class="kutt-roles-label">Elige tu rol para continuar</p>
+        <div class="kutt-roles-buttons">
+          <a routerLink="/registro/usuario" class="kutt-role-btn">
+            <span class="kutt-role-icon">👤</span>
+            Usuario
+          </a>
+          <a routerLink="/registro/negocio" class="kutt-role-btn">
+            <span class="kutt-role-icon">🏪</span>
+            Admin de un local
+          </a>
+        </div>
+      </div>
+
+      <p class="kutt-note">Cuentas de prueba: juan&#64;correo.com / cliente123 &middot; emilker&#64;barbershop.com / emilker123</p>
+    </div>
+  </div>
+</div>

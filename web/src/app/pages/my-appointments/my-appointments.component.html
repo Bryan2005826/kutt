@@ -1,0 +1,65 @@
+<div class="booking-shell">
+  <header class="booking-top">
+    <a routerLink="/" class="booking-brand">
+      <span class="booking-mark">K</span> Kutt
+    </a>
+    <div class="booking-nav">
+      <a routerLink="/agendar">Agendar cita</a>
+      <a routerLink="/mis-citas" class="active">Mis citas</a>
+      <a routerLink="/productos">Productos</a>
+      <span class="booking-user" *ngIf="auth.usuario()">{{ auth.usuario()?.nombre }}</span>
+      <button class="booking-logout" *ngIf="auth.usuario()" (click)="auth.logout()">Salir</button>
+    </div>
+  </header>
+
+  <main class="booking-main">
+    <h2 style="font-size:22px; margin-bottom:20px;">Mis citas</h2>
+
+    <div class="mc-empty" *ngIf="misCitas().length === 0">
+      <p>Todavía no tienes citas agendadas.</p>
+      <a routerLink="/agendar" class="btn-gold" style="width:auto; display:inline-flex; margin-top:14px;">Agendar cita</a>
+    </div>
+
+    <div class="mc-card" *ngFor="let c of misCitas()">
+      <div class="mc-left">
+        <p class="mc-service">{{ c.servicio }}<span *ngIf="c.adicionales"> + {{ c.adicionales }}</span></p>
+        <p class="mc-detail" *ngIf="c.barbero">Con {{ c.barbero }}</p>
+        <p class="mc-detail">{{ c.fecha }} · {{ c.hora }} · {{ formatPrecio(c.total) }}</p>
+        <p class="mc-notes" *ngIf="c.notas">"{{ c.notas }}"</p>
+      </div>
+      <div class="mc-right">
+        <span class="badge" [class.pending]="c.estado === 'Pendiente'" [class.cancel]="c.estado === 'Cancelada'" [class.done]="c.estado === 'Finalizada'">{{ c.estado }}</span>
+        <span class="badge" [class.pending]="c.estadoPago === 'Pendiente'" [class.done]="c.estadoPago === 'Pagado'">{{ c.estadoPago === 'Pagado' ? 'Pagado' : 'Pago pendiente' }}</span>
+        <div class="mc-actions" *ngIf="c.estado === 'Pendiente' || c.estado === 'Confirmada'">
+          <a class="mc-reprogramar" *ngIf="c.estadoPago === 'Pendiente'" [routerLink]="['/pagar/cita', c.id]">Pagar</a>
+          <button class="mc-reprogramar" (click)="abrirReprogramar(c.id)">Reprogramar</button>
+          <button class="mc-cancel" (click)="cancelar(c.id)">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel de reprogramar -->
+    <div class="reprogramar-panel" *ngIf="citaEnEdicion() !== null">
+      <div class="reprogramar-card">
+        <div class="reprogramar-head">
+          <h2>Reprogramar cita</h2>
+          <button class="checkout-close" (click)="cerrarReprogramar()">✕</button>
+        </div>
+
+        <p class="group-label">Nueva fecha</p>
+        <div class="option-row">
+          <button class="option-sm" *ngFor="let f of data.fechasDisponibles" [class.selected]="nuevaFecha === f" (click)="nuevaFecha = f">{{ f }}</button>
+        </div>
+
+        <p class="group-label">Nueva hora</p>
+        <div class="option-row">
+          <button class="option-sm" *ngFor="let h of data.horarios" [class.selected]="nuevaHora === h" (click)="nuevaHora = h">{{ h }}</button>
+        </div>
+
+        <button class="btn-gold" style="margin-top:20px" [disabled]="!nuevaFecha || !nuevaHora" (click)="confirmarReprogramar()">
+          Confirmar nueva fecha
+        </button>
+      </div>
+    </div>
+  </main>
+</div>

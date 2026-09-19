@@ -1,0 +1,53 @@
+<div class="pago-shell">
+  <header class="pago-top">
+    <a routerLink="/" class="pago-brand"><span class="pago-mark">K</span> Kutt</a>
+  </header>
+
+  <main class="pago-main" *ngIf="item() as it">
+    <!-- Antes de pagar: elegir metodo -->
+    <section class="pago-card" *ngIf="!resultado()">
+      <p class="eyebrow">{{ tipo === 'cita' ? 'Pago de tu cita' : 'Pago de tu compra' }}</p>
+      <h1 class="pago-total">{{ formatPrecio(it.total) }}</h1>
+      <p class="pago-detalle" *ngIf="tipo === 'venta'">{{ $any(it).detalle }}</p>
+      <p class="pago-detalle" *ngIf="tipo === 'cita'">
+        {{ $any(it).servicio }}<span *ngIf="$any(it).adicionales"> + {{ $any(it).adicionales }}</span>
+      </p>
+
+      <p class="group-label">Elige cómo pagar</p>
+      <div class="metodo-list">
+        <button class="metodo-option" *ngFor="let m of data.metodosPago()"
+                [class.selected]="metodoSeleccionado() === m.id" (click)="elegirMetodo(m.id)">
+          <span class="metodo-nombre">{{ m.nombre }}</span>
+          <span class="metodo-tipo">{{ m.tipo === 'DIGITAL' ? 'Pago inmediato con QR' : 'Pagas en el local' }}</span>
+        </button>
+      </div>
+
+      <button class="btn-gold" [disabled]="metodoSeleccionado() === null || procesando()" (click)="confirmarPago()">
+        {{ procesando() ? 'Generando...' : 'Continuar' }}
+      </button>
+    </section>
+
+    <!-- Resultado: QR de pago real -->
+    <section class="pago-card resultado" *ngIf="resultado() as r" >
+      <ng-container *ngIf="r.tipoQr === 'DIGITAL'; else ticket">
+        <div class="check-circle">✓</div>
+        <h1>¡Listo, ya pagaste!</h1>
+        <p class="pago-detalle">Escaneaste el QR y tu pago de {{ formatPrecio(r.total) }} quedó confirmado con {{ r.metodoPago }}.</p>
+        <div class="qr-box"></div>
+      </ng-container>
+      <ng-template #ticket>
+        <div class="ticket-icon">🎫</div>
+        <h1>Tu reserva quedó lista</h1>
+        <p class="pago-detalle">Vas a pagar {{ formatPrecio(r.total) }} en efectivo. Presenta este ticket QR el día de tu cita para pagar.</p>
+        <div class="qr-box"></div>
+      </ng-template>
+
+      <a routerLink="/mis-citas" class="btn-outline" style="margin-top:18px; width:auto; display:inline-flex; padding:12px 22px;" *ngIf="tipo === 'cita'">Ver mis citas</a>
+      <a routerLink="/productos" class="btn-outline" style="margin-top:18px; width:auto; display:inline-flex; padding:12px 22px;" *ngIf="tipo === 'venta'">Seguir comprando</a>
+    </section>
+  </main>
+
+  <main class="pago-main" *ngIf="!item()">
+    <p class="pago-detalle">No se encontró la {{ tipo === 'cita' ? 'cita' : 'compra' }} indicada.</p>
+  </main>
+</div>

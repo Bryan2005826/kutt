@@ -1,0 +1,29 @@
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">K</span>
+      <span class="brand-name">Kutt</span>
+    </div>
+
+    <nav class="side-nav">
+      <a *ngFor="let item of navItems" class="side-link" [routerLink]="item.path"
+         routerLinkActive="active" [routerLinkActiveOptions]="{exact: item.path === '/dashboard'}">
+        <span class="side-dot"></span>
+        {{ item.label }}
+      </a>
+    </nav>
+
+    <a routerLink="/" class="side-back">← Volver al sitio</a>
+    <div class="side-user" *ngIf="auth.usuario()">
+      <span>{{ auth.usuario()?.nombre }}</span>
+      <button (click)="auth.logout()">Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="offline-banner" *ngIf="data.sinConexion()">
+      No se pudo conectar con el backend en localhost:8080. Verifica que el proyecto Spring Boot esté corriendo (mvn spring-boot:run) y que MySQL esté encendido.
+    </div>
+    <router-outlet></router-outlet>
+  </main>
+</div>

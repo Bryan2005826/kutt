@@ -1,0 +1,46 @@
+<div class="booking-shell">
+  <header class="booking-top">
+    <a routerLink="/" class="booking-brand">
+      <span class="booking-mark">K</span> Kutt
+    </a>
+    <div class="booking-nav">
+      <a routerLink="/agendar">Agendar cita</a>
+      <a routerLink="/mis-citas">Mis citas</a>
+      <a routerLink="/productos" class="active">Productos</a>
+      <span class="booking-user" *ngIf="auth.usuario()">{{ auth.usuario()?.nombre }}</span>
+      <button class="booking-logout" *ngIf="auth.usuario()" (click)="auth.logout()">Salir</button>
+    </div>
+  </header>
+
+  <main class="booking-main" style="max-width:900px;">
+    <h2 style="font-size:22px; margin-bottom:6px;">Productos</h2>
+    <p class="step-sub">Agrega lo que quieras y paga por separado, sin necesidad de una cita.</p>
+
+    <div class="prod-grid">
+      <div class="prod-card" *ngFor="let p of data.productos()">
+        <div class="prod-icon"></div>
+        <p class="prod-name">{{ p.nombre }}</p>
+        <p class="prod-price">{{ formatPrecio(p.precio) }}</p>
+        <p class="prod-stock" [class.low]="p.existencias <= p.minimo">
+          {{ p.existencias > 0 ? p.existencias + ' disponibles' : 'Agotado' }}
+        </p>
+
+        <div class="prod-cart-controls" *ngIf="p.existencias > 0">
+          <button (click)="quitar(p.id)" [disabled]="cantidadEnCarrito(p.id) === 0">\u2212</button>
+          <span>{{ cantidadEnCarrito(p.id) }}</span>
+          <button (click)="agregar(p.id)" [disabled]="cantidadEnCarrito(p.id) >= p.existencias">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="cart-summary" *ngIf="itemsCarrito().length > 0">
+      <div class="cart-head">
+        <span>{{ itemsCarrito().length }} producto(s) en el carrito</span>
+        <strong>{{ formatPrecio(totalCarrito()) }}</strong>
+      </div>
+      <button class="btn-gold" [disabled]="comprando()" (click)="comprar()">
+        {{ comprando() ? 'Procesando...' : 'Continuar a pagar' }}
+      </button>
+    </div>
+  </main>
+</div>

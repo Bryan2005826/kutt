@@ -1,0 +1,39 @@
+<div class="kutt-reg-shell">
+  <div class="kutt-reg-card">
+    <a routerLink="/login" class="kutt-back">← Volver</a>
+    <h2>Registro de tu negocio</h2>
+
+    <p class="kutt-section-label">Tus datos</p>
+    <div class="kutt-field"><label>Tu nombre</label><input [(ngModel)]="nombre" name="nombre"></div>
+    <div class="kutt-field"><label>Correo electrónico</label><input type="email" [(ngModel)]="correo" name="correo"></div>
+    <div class="kutt-field"><label>Contraseña</label><input type="password" [(ngModel)]="password" name="password"></div>
+
+    <p class="kutt-section-label">Datos del negocio</p>
+    <div class="kutt-field"><label>Nombre del negocio</label><input [(ngModel)]="nombreNegocio" name="nombreNegocio"></div>
+
+    <div class="kutt-field">
+      <label>Rubro</label>
+      <select [(ngModel)]="rubro" name="rubro">
+        <option value="BARBERIA">Barbería</option>
+        <option value="UNAS">Uñas</option>
+        <option value="ESTETICA">Estética</option>
+        <option value="SPA">Spa</option>
+        <option value="OTRO">Otro</option>
+      </select>
+    </div>
+
+    <div class="kutt-field"><label>Teléfono fijo del local</label><input [(ngModel)]="telefonoFijoNegocio" name="telefonoFijoNegocio"></div>
+    <div class="kutt-field"><label>Departamento</label><input [(ngModel)]="departamentoNegocio" name="departamentoNegocio"></div>
+    <div class="kutt-field"><label>Dirección</label><input [(ngModel)]="direccionNegocio" name="direccionNegocio"></div>
+    <div class="kutt-field"><label>URL del logo del negocio</label><input [(ngModel)]="logoUrl" name="logoUrl" placeholder="https://..."></div>
+    <div class="kutt-field"><label>URL de la foto de portada</label><input [(ngModel)]="portadaUrl" name="portadaUrl" placeholder="https://..."></div>
+
+    <p class="kutt-error" *ngIf="error()">{{ error() }}</p>
+
+    <button class="kutt-btn-primary" [disabled]="cargando()" (click)="continuar()">
+      {{ cargando() ? 'Creando negocio...' : 'Continuar' }}
+    </button>
+
+    <p class="kutt-switch">¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a></p>
+  </div>
+</div>

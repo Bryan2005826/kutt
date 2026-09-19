@@ -1,0 +1,114 @@
+<div class="booking-shell">
+  <header class="booking-top">
+    <a routerLink="/" class="booking-brand">
+      <span class="booking-mark">K</span> Kutt
+    </a>
+    <div class="booking-nav">
+      <a routerLink="/agendar" class="active">Agendar cita</a>
+      <a routerLink="/mis-citas">Mis citas</a>
+      <a routerLink="/productos">Productos</a>
+      <span class="booking-user" *ngIf="auth.usuario()">{{ auth.usuario()?.nombre }}</span>
+      <button class="booking-logout" *ngIf="auth.usuario()" (click)="auth.logout()">Salir</button>
+    </div>
+  </header>
+
+  <main class="booking-main">
+    <div class="offline-banner" *ngIf="data.sinConexion()">
+      No se pudo conectar con el backend en localhost:8080. Verifica que Spring Boot y MySQL estén corriendo.
+    </div>
+
+    <div class="booking-steps">
+      <span [class.active]="paso() >= 1" [class.done]="paso() > 1">1. Barbero</span>
+      <span [class.active]="paso() >= 2" [class.done]="paso() > 2">2. Servicio</span>
+      <span [class.active]="paso() >= 3" [class.done]="paso() > 3">3. Fecha y hora</span>
+      <span [class.active]="paso() >= 4">4. Confirmar</span>
+    </div>
+
+    <!-- Paso 1: elegir barbero -->
+    <section class="step-card" *ngIf="paso() === 1">
+      <h2>¿Con quién te quieres cortar?</h2>
+      <p class="step-sub">Elige uno de los barberos en servicio.</p>
+      <div class="barbero-grid">
+        <button class="barbero-option" *ngFor="let b of data.barberos()" (click)="elegirBarbero(b.id)">
+          <img [src]="b.fotoUrl" [alt]="b.nombre" class="barbero-foto">
+          <span>{{ b.nombre }}</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Paso 2: servicio base + adicionales -->
+    <section class="step-card" *ngIf="paso() === 2">
+      <h2>{{ data.configuracion().servicioNombre }}</h2>
+      <p class="step-sub">{{ formatPrecio(data.configuracion().servicioPrecio) }} · con {{ nombreBarberoElegido() }}</p>
+
+      <p class="group-label">Adicionales (opcional)</p>
+      <div class="adicional-grid">
+        <label class="adicional-option" *ngFor="let a of data.adicionales()" [class.selected]="adicionalesElegidos().includes(a.id)">
+          <input type="checkbox" [checked]="adicionalesElegidos().includes(a.id)" (change)="toggleAdicional(a.id)">
+          <span>{{ a.nombre }}</span>
+          <strong>{{ formatPrecio(a.precio) }}</strong>
+        </label>
+      </div>
+
+      <div class="step-actions">
+        <button class="link-back" (click)="volver()">← Cambiar barbero</button>
+        <button class="btn-gold" style="width:auto" (click)="irAFechaYHora()">Continuar — {{ formatPrecio(totalEstimado()) }}</button>
+      </div>
+    </section>
+
+    <!-- Paso 3: fecha, hora, telefono, notas -->
+    <section class="step-card" *ngIf="paso() === 3">
+      <h2>Elige fecha y hora</h2>
+      <p class="step-sub">Total estimado: {{ formatPrecio(totalEstimado()) }}</p>
+
+      <p class="group-label">Fecha</p>
+      <div class="option-row">
+        <button class="option-sm" *ngFor="let f of data.fechasDisponibles" [class.selected]="fecha === f" (click)="fecha = f">{{ f }}</button>
+      </div>
+
+      <p class="group-label">Hora</p>
+      <div class="option-row">
+        <button class="option-sm" *ngFor="let h of data.horarios" [class.selected]="hora === h" (click)="hora = h">{{ h }}</button>
+      </div>
+
+      <div class="field" style="margin-top:20px">
+        <label>Tu celular (para confirmarte la cita)</label>
+        <input type="tel" [(ngModel)]="telefono" name="telefono" placeholder="300 123 4567">
+      </div>
+
+      <div class="field">
+        <label>Observaciones (opcional)</label>
+        <textarea [(ngModel)]="notas" name="notas" placeholder="Alguna observación..."></textarea>
+      </div>
+
+      <div class="step-actions">
+        <button class="link-back" (click)="volver()">← Cambiar adicionales</button>
+        <button class="btn-gold" style="width:auto" [disabled]="!fecha || !hora || !telefono" (click)="irAConfirmar()">Continuar</button>
+      </div>
+    </section>
+
+    <!-- Paso 4: confirmar -->
+    <section class="step-card" *ngIf="paso() === 4">
+      <h2>Confirma tu cita</h2>
+      <div class="summary">
+        <div class="summary-row"><span>Barbero</span><strong>{{ nombreBarberoElegido() }}</strong></div>
+        <div class="summary-row"><span>Servicio</span><strong>{{ data.configuracion().servicioNombre }}</strong></div>
+        <div class="summary-row" *ngIf="adicionalesElegidos().length">
+          <span>Adicionales</span>
+          <strong>{{ nombresAdicionalesElegidos() }}</strong>
+        </div>
+        <div class="summary-row"><span>Fecha</span><strong>{{ fecha }}</strong></div>
+        <div class="summary-row"><span>Hora</span><strong>{{ hora }}</strong></div>
+        <div class="summary-row"><span>Celular</span><strong>{{ telefono }}</strong></div>
+        <div class="summary-row"><span>Total</span><strong>{{ formatPrecio(totalEstimado()) }}</strong></div>
+      </div>
+      <p class="step-sub" style="margin-top:14px;">Después de confirmar eliges cómo pagar: con QR al instante o en efectivo el día de la cita.</p>
+      <div class="step-actions">
+        <button class="link-back" (click)="volver()">← Cambiar fecha/hora</button>
+        <button class="btn-gold" style="width:auto" [disabled]="confirmando()" (click)="confirmar()">
+          {{ confirmando() ? 'Agendando...' : 'Confirmar cita' }}
+        </button>
+      </div>
+    </section>
+  </main>
+</div>

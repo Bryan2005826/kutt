@@ -1,0 +1,77 @@
+.content-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 30px;
+}
+
+.eyebrow { font-size: 13px; color: var(--gold); margin-bottom: 6px; }
+.content-header h1 { font-size: 26px; }
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.metric {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+
+.metric-label { font-size: 13px; color: var(--text-dim); margin-bottom: 8px; }
+.metric-value { font-family: var(--font-display); font-size: 26px; margin-bottom: 10px; }
+.metric-link { font-size: 12px; color: var(--gold-bright); }
+.metric-warn .metric-value { color: var(--warning); }
+
+.panels {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 20px;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  padding: 22px;
+}
+
+.panel-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.panel-head h2 { font-size: 16px; font-family: var(--font-body); font-weight: 600; }
+.panel-action { font-size: 12px; color: var(--gold-bright); }
+
+.apt-row {
+  display: grid;
+  grid-template-columns: 70px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--surface-border);
+}
+.apt-row:first-of-type { border-top: none; }
+
+.apt-time { font-size: 12px; color: var(--text-dim); }
+.apt-info { display: flex; flex-direction: column; }
+.apt-client { font-size: 14px; }
+.apt-service { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+
+.stock-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 11px 0;
+  border-top: 1px solid var(--surface-border);
+  font-size: 13px;
+}
+.stock-row:first-of-type { border-top: none; }
+.stock-count { color: var(--warning); }
+
+.empty-hint { font-size: 13px; color: var(--text-dim); padding: 10px 0; }
+
+@media (max-width: 900px) {
+  .metrics { grid-template-columns: repeat(2, 1fr); }
+  .panels { grid-template-columns: 1fr; }
+}

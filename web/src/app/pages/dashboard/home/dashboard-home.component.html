@@ -1,0 +1,59 @@
+<header class="content-header">
+  <div>
+    <p class="eyebrow">Resumen del día</p>
+    <h1>Panel de Emilker</h1>
+  </div>
+</header>
+
+<section class="metrics">
+  <div class="metric">
+    <p class="metric-label">Citas activas</p>
+    <p class="metric-value">{{ citasActivas().length }}</p>
+    <a routerLink="/dashboard/agenda" class="metric-link">Ver agenda</a>
+  </div>
+  <div class="metric">
+    <p class="metric-label">Ventas registradas</p>
+    <p class="metric-value">{{ formatPrecio(ventasHoy()) }}</p>
+    <a routerLink="/dashboard/ventas" class="metric-link">Ver detalles</a>
+  </div>
+  <div class="metric">
+    <p class="metric-label">Clientes</p>
+    <p class="metric-value">{{ clientesTotal() }}</p>
+    <a routerLink="/dashboard/clientes" class="metric-link">Ver clientes</a>
+  </div>
+  <div class="metric metric-warn">
+    <p class="metric-label">Productos bajos</p>
+    <p class="metric-value">{{ bajoStock().length }}</p>
+    <a routerLink="/dashboard/inventario" class="metric-link">Ver inventario</a>
+  </div>
+</section>
+
+<section class="panels">
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Próximas citas</h2>
+      <a routerLink="/dashboard/agenda" class="panel-action">Ver todas</a>
+    </div>
+    <div class="apt-row" *ngFor="let a of citasActivas().slice(0, 4)">
+      <span class="apt-time">{{ a.hora }}</span>
+      <div class="apt-info">
+        <span class="apt-client">{{ a.cliente }}</span>
+        <span class="apt-service">{{ a.servicio }}</span>
+      </div>
+      <span class="badge" [class.pending]="a.estado === 'Pendiente'" [class.done]="a.estado === 'Finalizada'">{{ a.estado }}</span>
+    </div>
+    <p class="empty-hint" *ngIf="citasActivas().length === 0">No hay citas registradas.</p>
+  </div>
+
+  <div class="panel panel-narrow">
+    <div class="panel-head">
+      <h2>Bajo stock</h2>
+      <a routerLink="/dashboard/inventario" class="panel-action">Inventario</a>
+    </div>
+    <div class="stock-row" *ngFor="let p of bajoStock()">
+      <span class="stock-name">{{ p.nombre }}</span>
+      <span class="stock-count">{{ p.existencias }} uds.</span>
+    </div>
+    <p class="empty-hint" *ngIf="bajoStock().length === 0">Todo el inventario está en buen nivel.</p>
+  </div>
+</section>

@@ -1,0 +1,48 @@
+<header class="content-header">
+  <div>
+    <p class="eyebrow">Agenda</p>
+    <h1>Citas del establecimiento</h1>
+  </div>
+</header>
+
+<div class="panel">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Hora</th>
+        <th>Cliente</th>
+        <th>Celular</th>
+        <th>Barbero</th>
+        <th>Servicio</th>
+        <th>Total</th>
+        <th>Pago</th>
+        <th>Estado</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let c of data.citas()">
+        <td>{{ c.hora }} · {{ c.fecha }}</td>
+        <td>{{ c.cliente }}</td>
+        <td>{{ c.telefonoCliente || '-' }}</td>
+        <td>{{ c.barbero || '-' }}</td>
+        <td>{{ c.servicio }}<span *ngIf="c.adicionales"> + {{ c.adicionales }}</span></td>
+        <td>{{ formatPrecio(c.total) }}</td>
+        <td>
+          <span class="badge" [class.pending]="c.estadoPago === 'Pendiente'" [class.done]="c.estadoPago === 'Pagado'">
+            {{ c.estadoPago === 'Pagado' ? 'Pagado' : (c.tipoQr === 'TICKET' ? 'Ticket efectivo' : 'Sin pagar') }}
+          </span>
+        </td>
+        <td>
+          <span class="badge" [class.pending]="c.estado === 'Pendiente'" [class.cancel]="c.estado === 'Cancelada'" [class.done]="c.estado === 'Finalizada'">{{ c.estado }}</span>
+          <span class="reminder-tag" *ngIf="c.estado === 'Confirmada' && c.recordatorioEnviado" title="Recordatorio ya enviado">🔔</span>
+        </td>
+        <td class="actions-cell">
+          <button class="row-action gold" *ngIf="c.estado === 'Pendiente'" (click)="aceptar(c.id)">Aceptar</button>
+          <button class="row-action danger" *ngIf="c.estado === 'Pendiente'" (click)="rechazar(c.id)">Rechazar</button>
+          <button class="row-action gold" *ngIf="c.estado === 'Confirmada'" (click)="finalizar(c.id)">Finalizar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

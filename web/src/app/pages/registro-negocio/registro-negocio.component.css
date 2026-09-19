@@ -1,0 +1,45 @@
+:host { display: block; min-height: 100vh; background: var(--bg); }
+
+.kutt-reg-shell { display: flex; justify-content: center; padding: 50px 20px; }
+.kutt-reg-card { width: 100%; max-width: 440px; }
+
+.kutt-back { display: inline-block; font-size: 13px; color: var(--text-dim); margin-bottom: 16px; }
+.kutt-back:hover { color: var(--text); }
+
+.kutt-reg-card h2 { font-size: 24px; color: var(--text); margin-bottom: 20px; font-family: var(--font-display); }
+
+.kutt-section-label { font-size: 12px; color: var(--pink-bright); text-transform: uppercase; letter-spacing: 0.06em; margin: 18px 0 12px; }
+.kutt-section-label:first-of-type { margin-top: 0; }
+
+.kutt-field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
+.kutt-field label { font-size: 13px; color: var(--text-dim); }
+.kutt-field input, .kutt-field select {
+  background: var(--surface-2);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  padding: 12px 14px;
+  font-size: 14px;
+  font-family: var(--font-body);
+  width: 100%;
+}
+.kutt-field input:focus, .kutt-field select:focus { outline: none; border-color: var(--pink); }
+
+.kutt-error { font-size: 13px; color: var(--danger); margin-bottom: 12px; }
+
+.kutt-btn-primary {
+  background: var(--pink);
+  color: #fff;
+  border-radius: 999px;
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  width: 100%;
+  margin-bottom: 14px;
+  margin-top: 8px;
+}
+.kutt-btn-primary:hover { background: var(--pink-dim); }
+.kutt-btn-primary:disabled { opacity: 0.6; }
+
+.kutt-switch { text-align: center; font-size: 13px; color: var(--text-dim); }
+.kutt-switch a { color: var(--pink-bright); font-weight: 600; }

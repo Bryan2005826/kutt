@@ -1,0 +1,67 @@
+<header class="content-header">
+  <div>
+    <p class="eyebrow">Ajustes</p>
+    <h1>Configuración del negocio</h1>
+  </div>
+</header>
+
+<div class="panel form-panel">
+  <h2>Servicio base</h2>
+  <div class="form-row">
+    <div class="field"><label>Nombre</label><input [(ngModel)]="servicioNombre" name="servicioNombre"></div>
+    <div class="field"><label>Precio</label><input type="number" [(ngModel)]="servicioPrecio" name="servicioPrecio"></div>
+    <div class="field"><label>Notificaciones a</label><input [(ngModel)]="notificacionDestino" name="notificacionDestino" placeholder="correo o celular"></div>
+  </div>
+  <button class="btn-gold" style="width:auto" (click)="guardarServicio()">
+    {{ guardadoServicio() ? 'Guardado ✓' : 'Guardar cambios' }}
+  </button>
+</div>
+
+<div class="panel form-panel">
+  <h2>Adicionales</h2>
+  <div class="lista-chip" *ngFor="let a of data.adicionales()">
+    <span>{{ a.nombre }} — {{ formatPrecio(a.precio) }}</span>
+    <button class="chip-remove" (click)="eliminarAdicional(a.id)">✕</button>
+  </div>
+  <div class="form-row" style="margin-top:14px;">
+    <div class="field"><label>Nombre</label><input [(ngModel)]="nuevoAdicionalNombre" name="nuevoAdicionalNombre" placeholder="Ej: Mascarilla"></div>
+    <div class="field"><label>Precio</label><input type="number" [(ngModel)]="nuevoAdicionalPrecio" name="nuevoAdicionalPrecio"></div>
+  </div>
+  <button class="btn-outline" style="width:auto; padding:10px 18px;" (click)="agregarAdicional()">+ Agregar adicional</button>
+</div>
+
+<div class="panel form-panel">
+  <h2>Métodos de pago</h2>
+  <div class="lista-chip" *ngFor="let m of data.metodosPago()">
+    <span>{{ m.nombre }} ({{ m.tipo === 'DIGITAL' ? 'Digital' : 'Efectivo' }}) — {{ m.cuenta }}</span>
+    <button class="chip-remove" (click)="eliminarMetodo(m.id)">✕</button>
+  </div>
+  <div class="form-row" style="margin-top:14px;">
+    <div class="field"><label>Nombre</label><input [(ngModel)]="nuevoMetodoNombre" name="nuevoMetodoNombre" placeholder="Ej: Daviplata"></div>
+    <div class="field">
+      <label>Tipo</label>
+      <select [(ngModel)]="nuevoMetodoTipo" name="nuevoMetodoTipo">
+        <option value="DIGITAL">Digital (QR de pago)</option>
+        <option value="EFECTIVO">Efectivo (ticket)</option>
+      </select>
+    </div>
+    <div class="field"><label>Cuenta / dato</label><input [(ngModel)]="nuevoMetodoCuenta" name="nuevoMetodoCuenta" placeholder="Número o alias"></div>
+  </div>
+  <button class="btn-outline" style="width:auto; padding:10px 18px;" (click)="agregarMetodo()">+ Agregar método</button>
+</div>
+
+<div class="panel form-panel">
+  <h2>Barberos en servicio</h2>
+  <div class="barbero-lista">
+    <div class="barbero-chip" *ngFor="let b of data.barberos()">
+      <img [src]="b.fotoUrl" [alt]="b.nombre">
+      <span>{{ b.nombre }}</span>
+      <button class="chip-remove" (click)="eliminarBarbero(b.id)">✕</button>
+    </div>
+  </div>
+  <div class="form-row" style="margin-top:14px; grid-template-columns: 1fr 1fr;">
+    <div class="field"><label>Nombre</label><input [(ngModel)]="nuevoBarberoNombre" name="nuevoBarberoNombre" placeholder="Ej: Miguel Ángel"></div>
+    <div class="field"><label>URL de la foto</label><input [(ngModel)]="nuevoBarberoFoto" name="nuevoBarberoFoto" placeholder="https://..."></div>
+  </div>
+  <button class="btn-outline" style="width:auto; padding:10px 18px;" (click)="agregarBarbero()">+ Agregar barbero</button>
+</div>

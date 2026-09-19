@@ -1,0 +1,68 @@
+<header class="content-header">
+  <div>
+    <p class="eyebrow">Reportes</p>
+    <h1>Estadísticas del negocio</h1>
+  </div>
+  <button class="btn-outline" style="width:auto; padding:10px 18px;" (click)="exportarVentasCsv()">
+    Exportar ventas (CSV)
+  </button>
+</header>
+
+<section class="metrics">
+  <div class="metric">
+    <p class="metric-label">Total en ventas</p>
+    <p class="metric-value">{{ formatPrecio(totalVentas()) }}</p>
+  </div>
+  <div class="metric">
+    <p class="metric-label">Venta promedio</p>
+    <p class="metric-value">{{ formatPrecio(promedioVenta()) }}</p>
+  </div>
+  <div class="metric">
+    <p class="metric-label">Clientes</p>
+    <p class="metric-value">{{ clientesTotal() }}</p>
+  </div>
+  <div class="metric metric-warn">
+    <p class="metric-label">Bajo stock</p>
+    <p class="metric-value">{{ productosBajoStock().length }}</p>
+  </div>
+</section>
+
+<section class="panels">
+  <div class="panel">
+    <div class="panel-head"><h2>Citas por estado</h2></div>
+    <div class="bar-row" *ngFor="let c of citasPorEstado()">
+      <span class="bar-label">{{ c.estado }}</span>
+      <div class="bar-track">
+        <div class="bar-fill" [style.width.%]="c.porcentaje"></div>
+      </div>
+      <span class="bar-value">{{ c.cantidad }}</span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><h2>Servicios más agendados</h2></div>
+    <div class="bar-row" *ngFor="let s of serviciosPopulares()">
+      <span class="bar-label">{{ s.servicio }}</span>
+      <div class="bar-track">
+        <div class="bar-fill gold" [style.width.%]="s.porcentaje"></div>
+      </div>
+      <span class="bar-value">{{ s.cantidad }}</span>
+    </div>
+    <p class="empty-hint" *ngIf="serviciosPopulares().length === 0">Aún no hay citas registradas.</p>
+  </div>
+</section>
+
+<section class="panel" style="margin-top:20px;">
+  <div class="panel-head"><h2>Inventario en alerta</h2></div>
+  <table class="data-table">
+    <thead><tr><th>Producto</th><th>Existencias</th><th>Mínimo</th></tr></thead>
+    <tbody>
+      <tr *ngFor="let p of productosBajoStock()">
+        <td>{{ p.nombre }}</td>
+        <td>{{ p.existencias }}</td>
+        <td>{{ p.minimo }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="empty-hint" *ngIf="productosBajoStock().length === 0">Todo el inventario está en buen nivel.</p>
+</section>

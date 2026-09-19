@@ -1,0 +1,126 @@
+<nav class="nav">
+  <div class="nav-brand">
+    <span class="nav-crown">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M3 8l4 3 5-6 5 6 4-3-2 10H5L3 8z" fill="#ff3d82"/><circle cx="12" cy="19" r="1.4" fill="#ff3d82"/></svg>
+    </span>
+    <span class="nav-name">Kutt</span>
+  </div>
+  <div class="nav-links">
+    <a href="#funciones">Funciones</a>
+    <a href="#agenda">Cómo funciona</a>
+    <a routerLink="/login" class="nav-cta">Agendar una cita</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-copy">
+    <p class="hero-eyebrow">Software de gestión para barberías</p>
+    <h1>La barbería se administra sola<br>mientras tú cortas.</h1>
+    <p class="hero-sub">
+      Agenda, clientes, ventas e inventario de tu barbería en un solo lugar con Kutt —
+      sin cuadernos, sin WhatsApp perdido, sin citas encimadas.
+    </p>
+    <div class="hero-actions">
+      <a routerLink="/login" class="btn btn-primary">Agendar una cita</a>
+      <a href="#funciones" class="btn btn-ghost">Ver qué incluye</a>
+    </div>
+  </div>
+
+  <div class="hero-panel" aria-hidden="true">
+    <div class="panel-window">
+      <div class="panel-header">
+        <span class="panel-logo">KUTT</span>
+        <span class="panel-date">8 de mayo</span>
+      </div>
+      <div class="panel-stats">
+        <div class="stat">
+          <span class="stat-label">Citas hoy</span>
+          <span class="stat-value">6</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Ventas hoy</span>
+          <span class="stat-value">$320.000</span>
+        </div>
+        <div class="stat stat-warn">
+          <span class="stat-label">Bajo stock</span>
+          <span class="stat-value">3</span>
+        </div>
+      </div>
+      <div class="panel-list">
+        <p class="panel-list-title">Próximas citas</p>
+        <div class="panel-row" *ngFor="let a of appointments">
+          <span class="panel-time">{{ a.time }}</span>
+          <span class="panel-client">{{ a.client }}<small>{{ a.service }}</small></span>
+          <span class="panel-badge" [class.pending]="a.status === 'Pendiente'">{{ a.status }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="features" id="funciones">
+  <div class="features-head">
+    <div>
+      <p class="section-eyebrow">Funciones y beneficios</p>
+      <h2>Todo lo que hace Kutt por tu negocio</h2>
+    </div>
+    <div class="carousel-arrows">
+      <button (click)="moverCarrusel(-1)" aria-label="Anterior">‹</button>
+      <button (click)="moverCarrusel(1)" aria-label="Siguiente">›</button>
+    </div>
+  </div>
+
+  <div class="carousel-track" #carouselTrack>
+    <div class="carousel-card" *ngFor="let f of carrusel">
+      <div class="feature-icon" [attr.data-icon]="f.icon"></div>
+      <h3>{{ f.name }}</h3>
+      <p>{{ f.detail }}</p>
+    </div>
+  </div>
+</section>
+
+<section class="cobro" id="agenda">
+  <div class="cobro-copy">
+    <p class="section-eyebrow">Al agendar, o cuando compres algo</p>
+    <h2>Paga como prefieras, con QR</h2>
+    <p class="cobro-text">
+      Al confirmar una cita o una compra de productos, el cliente elige cómo pagar. Si es un
+      método digital, se genera un QR de pago al instante. Si prefiere efectivo, se genera un
+      ticket QR de reserva para pagar en persona el día de la cita.
+    </p>
+    <ul class="cobro-points">
+      <li>QR de pago real o ticket de reserva</li>
+      <li>Notificación automática al dueño del negocio</li>
+      <li>Compra de productos sin necesidad de una cita</li>
+    </ul>
+  </div>
+  <div class="cobro-visual" aria-hidden="true">
+    <div class="qr-card">
+      <div class="qr-total">
+        <span>Total a cobrar</span>
+        <strong>$85.000</strong>
+      </div>
+      <div class="qr-code"></div>
+      <p class="qr-hint">Corte + Diseño + Cera Mate</p>
+    </div>
+  </div>
+</section>
+
+<footer class="trust">
+  <div class="trust-item">
+    <div class="trust-icon" data-icon="cloud"></div>
+    <p>Accede desde cualquier dispositivo</p>
+  </div>
+  <div class="trust-item">
+    <div class="trust-icon" data-icon="shield"></div>
+    <p>Tu información siempre segura</p>
+  </div>
+  <div class="trust-item">
+    <div class="trust-icon" data-icon="bell"></div>
+    <p>Recordatorios automáticos por correo</p>
+  </div>
+</footer>
+
+<div class="staff-access">
+  <a routerLink="/login">¿Eres dueño de un negocio? Ingresa aquí →</a>
+</div>
