@@ -13,5 +13,9 @@ COPY --from=build /app/target/*.jar app.jar
 
 # Render asigna el puerto real en la variable de entorno PORT; application.properties
 # ya lee server.port=${PORT:8080}, asi que no hay que tocar nada mas.
+#
+# -Djava.net.preferIPv4Stack=true: Render intenta conectar por IPv6 por defecto,
+# y la base de datos de Aiven rechaza esa ruta (Connection refused) aunque por
+# IPv4 funciona bien. Esto obliga a Java a usar siempre IPv4.
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Djava.net.preferIPv4Stack=true", "-jar", "app.jar"]
