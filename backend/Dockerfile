@@ -11,11 +11,6 @@ FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 
-# Render asigna el puerto real en la variable de entorno PORT; application.properties
-# ya lee server.port=${PORT:8080}, asi que no hay que tocar nada mas.
-#
-# -Djava.net.preferIPv4Stack=true: Render intenta conectar por IPv6 por defecto,
-# y la base de datos de Aiven rechaza esa ruta (Connection refused) aunque por
-# IPv4 funciona bien. Esto obliga a Java a usar siempre IPv4.
 EXPOSE 8080
-ENTRYPOINT ["java", "-Djava.net.preferIPv4Stack=true", "-jar", "app.jar"]
+
+ENTRYPOINT ["sh", "-c", "echo '--- DIAGNOSTICO DE CONEXION A AIVEN ---'; nc -zvw5 mysql-12e3b161-brayanjosua2005-0216.j.aivencloud.com 24907 2>&1 || echo 'nc fallo o no esta disponible'; echo '--- FIN DIAGNOSTICO ---'; exec java -Djava.net.preferIPv4Stack=true -jar app.jar"]
