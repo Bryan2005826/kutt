@@ -1,0 +1,13 @@
+target/
+*.class
+*.log
+.idea/
+*.iml
+.vscode/
+
+# Llave privada de la cuenta de servicio de Firebase: NUNCA debe subirse al
+# repositorio (es una credencial real). En Render se sube como "Secret File".
+firebase-service-account.json
+
+# Variables de entorno locales, si llegas a usar un archivo .env
+.env
