@@ -26,8 +26,12 @@ public class VentaService {
         this.metodoPagoRepository = metodoPagoRepository;
     }
 
-    // CU-07: compra de productos independiente de una cita
+    // CU-07: compra de productos independiente de una cita, dentro de un negocio concreto
     public Venta comprar(CompraRequest request) {
+        if (request.getNegocioId() == null) {
+            throw new IllegalArgumentException("Falta indicar a que negocio pertenece la compra.");
+        }
+
         List<String> nombres = new ArrayList<>();
         double total = 0;
 
@@ -45,6 +49,7 @@ public class VentaService {
         }
 
         Venta venta = new Venta();
+        venta.setNegocioId(request.getNegocioId());
         venta.setCliente(request.getCliente());
         venta.setDetalle(String.join(", ", nombres));
         venta.setTotal(total);

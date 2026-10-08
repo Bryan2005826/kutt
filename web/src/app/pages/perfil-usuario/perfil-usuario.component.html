@@ -1,0 +1,57 @@
+<div class="booking-shell">
+  <header class="booking-top">
+    <a routerLink="/" class="booking-brand">
+      <span class="booking-mark">K</span> Kutt
+    </a>
+    <div class="booking-nav">
+      <a routerLink="/descubrir">Descubrir</a>
+      <a routerLink="/mis-citas">Mis citas</a>
+      <a routerLink="/favoritos">Favoritos</a>
+      <a routerLink="/perfil" class="active">Mi perfil</a>
+      <span class="booking-user" *ngIf="auth.usuario()">{{ auth.usuario()?.nombre }}</span>
+      <button class="booking-logout" *ngIf="auth.usuario()" (click)="auth.logout()">Salir</button>
+    </div>
+  </header>
+
+  <main class="booking-main">
+    <div class="cabecera-perfil">
+      <div class="avatar-perfil">{{ auth.usuario()?.nombre?.charAt(0) }}</div>
+      <div>
+        <h2>{{ auth.usuario()?.nombre }}</h2>
+        <p>{{ auth.usuario()?.correo }}</p>
+      </div>
+    </div>
+
+    <div class="resumen-mini">
+      <span>{{ citasDelCliente().length }} citas realizadas</span>
+    </div>
+
+    <h3 class="subtitulo-seccion">Editar mi perfil</h3>
+
+    <div class="field"><label>Apellidos</label><input [(ngModel)]="apellidos" name="apellidos"></div>
+    <div class="field"><label>Teléfono</label><input [(ngModel)]="telefono" name="telefono"></div>
+    <div class="field"><label>Departamento</label><input [(ngModel)]="departamento" name="departamento"></div>
+    <div class="field"><label>Ciudad</label><input [(ngModel)]="ciudad" name="ciudad"></div>
+
+    <div class="field">
+      <label>Género</label>
+      <div class="genero-row">
+        <label class="radio-inline"><input type="radio" name="genero" value="Masculino" [(ngModel)]="genero"> Masculino</label>
+        <label class="radio-inline"><input type="radio" name="genero" value="Femenino" [(ngModel)]="genero"> Femenino</label>
+        <label class="radio-inline"><input type="radio" name="genero" value="Otro" [(ngModel)]="genero"> Otro</label>
+      </div>
+    </div>
+
+    <div class="field"><label>Fecha de nacimiento</label><input type="date" [(ngModel)]="fechaNacimiento" name="fechaNacimiento"></div>
+    <div class="field"><label>Dirección (opcional)</label><input [(ngModel)]="direccion" name="direccion"></div>
+
+    <label class="checkbox-ubicacion">
+      <input type="checkbox" [(ngModel)]="permiteUbicacion" name="permiteUbicacion">
+      Permitir el uso de mi ubicación para encontrar negocios cercanos
+    </label>
+
+    <button class="btn-gold" style="width:auto" (click)="guardar()">
+      {{ guardado() ? 'Guardado ✓' : 'Guardar cambios' }}
+    </button>
+  </main>
+</div>

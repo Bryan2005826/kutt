@@ -1,0 +1,37 @@
+<div class="booking-shell">
+  <header class="booking-top">
+    <a routerLink="/" class="booking-brand">
+      <span class="booking-mark">K</span> Kutt
+    </a>
+    <div class="booking-nav">
+      <a routerLink="/descubrir">Descubrir</a>
+      <a routerLink="/mis-citas">Mis citas</a>
+      <a routerLink="/favoritos" class="active">Favoritos</a>
+      <a routerLink="/perfil">Mi perfil</a>
+      <span class="booking-user" *ngIf="auth.usuario()">{{ auth.usuario()?.nombre }}</span>
+      <button class="booking-logout" *ngIf="auth.usuario()" (click)="auth.logout()">Salir</button>
+    </div>
+  </header>
+
+  <main class="booking-main--ancho">
+    <h2 class="titulo-pagina">Mis favoritos</h2>
+    <p class="subtitulo-pagina">Los negocios que guardaste para volver fácil a ellos.</p>
+
+    <div class="favorito-lista">
+      <a class="favorito-item" *ngFor="let n of negociosFavoritos()" [routerLink]="['/negocio', n.id]">
+        <div class="favorito-logo" [style.backgroundImage]="n.logoUrl ? 'url(' + n.logoUrl + ')' : null">
+          <span *ngIf="!n.logoUrl">{{ n.nombre.charAt(0) }}</span>
+        </div>
+        <div class="favorito-info">
+          <strong>{{ n.nombre }}</strong>
+          <span>{{ nombreRubro(n.rubro) }} · {{ n.direccion }}</span>
+        </div>
+        <button class="quitar-favorito" (click)="quitar(n.id, $event)">Quitar</button>
+      </a>
+    </div>
+
+    <p class="sin-resultados" *ngIf="negociosFavoritos().length === 0">
+      Todavía no tienes negocios favoritos. Ve a <a routerLink="/descubrir">Descubrir</a> y guarda los que más te gusten.
+    </p>
+  </main>
+</div>

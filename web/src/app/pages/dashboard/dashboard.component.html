@@ -1,8 +1,14 @@
 <div class="shell">
-  <aside class="sidebar">
+  <button class="menu-toggle" (click)="toggleMenu()" aria-label="Abrir menú">☰</button>
+  <div class="sidebar-backdrop" *ngIf="menuAbierto()" (click)="toggleMenu()"></div>
+
+  <aside class="sidebar" [class.abierto]="menuAbierto()">
     <div class="brand">
-      <span class="brand-mark">K</span>
+      <span class="brand-crown">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M3 8l4 3 5-6 5 6 4-3-2 10H5L3 8z" fill="#e8352e"/><circle cx="12" cy="19" r="1.4" fill="#e8352e"/></svg>
+      </span>
       <span class="brand-name">Kutt</span>
+      <button class="cerrar-menu" (click)="toggleMenu()" aria-label="Cerrar menú">✕</button>
     </div>
 
     <nav class="side-nav">

@@ -1,0 +1,36 @@
+<div class="modal-fondo" (click)="cerrarModal()">
+  <div class="modal-caja" (click)="$event.stopPropagation()">
+    <button class="modal-cerrar" (click)="cerrarModal()" aria-label="Cerrar">✕</button>
+
+    <h2>Inicia sesión para continuar</h2>
+    <p class="modal-subtitulo">Necesitas una cuenta para guardar favoritos, agendar citas y comprar productos.</p>
+
+    <div class="modal-field">
+      <label>Correo electrónico</label>
+      <input type="text" [(ngModel)]="correo" name="correo" placeholder="tucorreo@ejemplo.com">
+    </div>
+    <div class="modal-field">
+      <label>Contraseña</label>
+      <input type="password" [(ngModel)]="password" name="password" placeholder="••••••••"
+             (keyup.enter)="entrar()">
+    </div>
+
+    <p class="modal-error" *ngIf="error()">{{ error() }}</p>
+
+    <div class="g-recaptcha" data-sitekey="6LeradAtAAAAAODAjjHylub4EuGnF9SvR1k6R4kN"></div>
+
+    <button class="btn-gold" [disabled]="cargando()" (click)="entrar()">
+      {{ cargando() ? 'Entrando...' : 'Entrar' }}
+    </button>
+
+    <div class="modal-divider"><span>o continúa con</span></div>
+
+    <button class="btn-outline" (click)="continuarConGoogle()">Continuar con Google</button>
+    <button class="btn-outline" (click)="continuarConFacebook()">Continuar con Facebook</button>
+
+    <p class="modal-switch">
+      ¿No tienes cuenta?
+      <a routerLink="/registro/usuario" (click)="cerrarModal()">Regístrate como usuario</a>
+    </p>
+  </div>
+</div>

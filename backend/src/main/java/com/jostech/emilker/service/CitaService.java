@@ -4,13 +4,13 @@ import com.jostech.emilker.dto.CrearCitaRequest;
 import com.jostech.emilker.model.Adicional;
 import com.jostech.emilker.model.Barbero;
 import com.jostech.emilker.model.Cita;
-import com.jostech.emilker.model.Configuracion;
 import com.jostech.emilker.model.MetodoPago;
+import com.jostech.emilker.model.Negocio;
 import com.jostech.emilker.repository.AdicionalRepository;
 import com.jostech.emilker.repository.BarberoRepository;
 import com.jostech.emilker.repository.CitaRepository;
-import com.jostech.emilker.repository.ConfiguracionRepository;
 import com.jostech.emilker.repository.MetodoPagoRepository;
+import com.jostech.emilker.repository.NegocioRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,27 +21,28 @@ public class CitaService {
 
     private final CitaRepository citaRepository;
     private final AdicionalRepository adicionalRepository;
-    private final ConfiguracionRepository configuracionRepository;
+    private final NegocioRepository negocioRepository;
     private final MetodoPagoRepository metodoPagoRepository;
     private final BarberoRepository barberoRepository;
 
     public CitaService(CitaRepository citaRepository, AdicionalRepository adicionalRepository,
-                        ConfiguracionRepository configuracionRepository, MetodoPagoRepository metodoPagoRepository,
+                        NegocioRepository negocioRepository, MetodoPagoRepository metodoPagoRepository,
                         BarberoRepository barberoRepository) {
         this.citaRepository = citaRepository;
         this.adicionalRepository = adicionalRepository;
-        this.configuracionRepository = configuracionRepository;
+        this.negocioRepository = negocioRepository;
         this.metodoPagoRepository = metodoPagoRepository;
         this.barberoRepository = barberoRepository;
     }
 
-    // CU-04: agendar cita con servicio base + adicionales elegidos
+    // CU-04: agendar cita con servicio base + adicionales elegidos, todo dentro
+    // del negocio concreto que el cliente escogio en Descubrir (multi-tenant real)
     public Cita crear(CrearCitaRequest request) {
-        Configuracion config = configuracionRepository.findById(1L).orElseGet(() -> {
-            Configuracion nueva = new Configuracion();
-            nueva.setId(1L);
-            return configuracionRepository.save(nueva);
-        });
+        if (request.getNegocioId() == null) {
+            throw new IllegalArgumentException("Falta indicar a que negocio pertenece la cita.");
+        }
+        Negocio negocio = negocioRepository.findById(request.getNegocioId()).orElseThrow(() ->
+                new IllegalArgumentException("Negocio no encontrado: " + request.getNegocioId()));
 
         List<String> nombresAdicionales = new ArrayList<>();
         double totalAdicionales = 0;
@@ -55,9 +56,10 @@ public class CitaService {
         }
 
         Cita cita = new Cita();
+        cita.setNegocioId(negocio.getId());
         cita.setCliente(request.getCliente());
         cita.setTelefonoCliente(request.getTelefonoCliente());
-        cita.setServicio(config.getServicioNombre());
+        cita.setServicio(negocio.getServicioNombre());
 
         if (request.getBarberoId() != null) {
             Barbero barbero = barberoRepository.findById(request.getBarberoId()).orElseThrow(() ->
@@ -71,7 +73,7 @@ public class CitaService {
         cita.setNotas(request.getNotas());
         cita.setEstado("Pendiente");
         cita.setEstadoPago("Pendiente");
-        cita.setTotal(config.getServicioPrecio() + totalAdicionales);
+        cita.setTotal(negocio.getServicioPrecio() + totalAdicionales);
 
         return citaRepository.save(cita);
     }

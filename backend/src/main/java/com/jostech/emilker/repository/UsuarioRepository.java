@@ -7,4 +7,7 @@ import java.util.Optional;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     Optional<Usuario> findByCorreo(String correo);
+
+    // CU: recuperar contraseña — buscar al usuario dueño de un token de restablecimiento vigente
+    Optional<Usuario> findByResetToken(String resetToken);
 }

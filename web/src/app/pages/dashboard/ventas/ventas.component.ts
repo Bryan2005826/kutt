@@ -54,12 +54,17 @@ import { DataService } from '../../../services/data.service';
   `,
   styles: [`
     .content-header { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 26px; }
-    .eyebrow { font-size: 13px; color: var(--gold); margin-bottom: 6px; }
+    .eyebrow { font-size: 13px; color: var(--pink); margin-bottom: 6px; }
     .content-header h1 { font-size: 22px; }
     .panel { background: var(--surface); border: 1px solid var(--surface-border); border-radius: var(--radius-md); padding: 8px 22px; }
     .form-panel { padding: 22px; margin-bottom: 20px; }
     .form-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
     .empty-hint { font-size: 13px; color: var(--text-dim); padding: 20px 4px; }
+    @media (max-width: 700px) {
+      .content-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .form-row { grid-template-columns: 1fr; }
+      .form-panel { padding: 16px; }
+    }
   `]
 })
 export class VentasComponent {

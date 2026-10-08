@@ -4,11 +4,17 @@
       <span class="booking-mark">K</span> Kutt
     </a>
     <div class="booking-nav">
-      <a routerLink="/agendar" class="active">Agendar cita</a>
-      <a routerLink="/mis-citas">Mis citas</a>
-      <a routerLink="/productos">Productos</a>
-      <span class="booking-user" *ngIf="auth.usuario()">{{ auth.usuario()?.nombre }}</span>
-      <button class="booking-logout" *ngIf="auth.usuario()" (click)="auth.logout()">Salir</button>
+      <a routerLink="/descubrir">Descubrir</a>
+      <ng-container *ngIf="auth.usuario(); else invitado">
+        <a routerLink="/mis-citas">Mis citas</a>
+        <a routerLink="/favoritos">Favoritos</a>
+        <a routerLink="/perfil">Mi perfil</a>
+        <span class="booking-user">{{ auth.usuario()?.nombre }}</span>
+        <button class="booking-logout" (click)="auth.logout()">Salir</button>
+      </ng-container>
+      <ng-template #invitado>
+        <a routerLink="/login">Iniciar sesión</a>
+      </ng-template>
     </div>
   </header>
 
@@ -38,8 +44,8 @@
 
     <!-- Paso 2: servicio base + adicionales -->
     <section class="step-card" *ngIf="paso() === 2">
-      <h2>{{ data.configuracion().servicioNombre }}</h2>
-      <p class="step-sub">{{ formatPrecio(data.configuracion().servicioPrecio) }} · con {{ nombreBarberoElegido() }}</p>
+      <h2>{{ negocio()?.servicioNombre }}</h2>
+      <p class="step-sub">{{ formatPrecio(negocio()?.servicioPrecio || 0) }} · con {{ nombreBarberoElegido() }}</p>
 
       <p class="group-label">Adicionales (opcional)</p>
       <div class="adicional-grid">
@@ -92,7 +98,7 @@
       <h2>Confirma tu cita</h2>
       <div class="summary">
         <div class="summary-row"><span>Barbero</span><strong>{{ nombreBarberoElegido() }}</strong></div>
-        <div class="summary-row"><span>Servicio</span><strong>{{ data.configuracion().servicioNombre }}</strong></div>
+        <div class="summary-row"><span>Servicio</span><strong>{{ negocio()?.servicioNombre }}</strong></div>
         <div class="summary-row" *ngIf="adicionalesElegidos().length">
           <span>Adicionales</span>
           <strong>{{ nombresAdicionalesElegidos() }}</strong>
@@ -112,3 +118,5 @@
     </section>
   </main>
 </div>
+
+<app-login-modal *ngIf="mostrarLoginModal()" (exito)="loginExitoso()" (cerrar)="cerrarLoginModal()"></app-login-modal>

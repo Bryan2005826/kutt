@@ -8,15 +8,15 @@
   border-bottom: 1px solid var(--surface-border);
 }
 .booking-brand { font-family: var(--font-display); font-size: 16px; display: flex; align-items: center; gap: 8px; }
-.booking-brand em { font-style: normal; color: var(--gold-bright); }
+.booking-brand em { font-style: normal; color: var(--pink-bright); }
 .booking-mark {
   width: 26px; height: 26px; border-radius: 50%;
-  border: 1.5px solid var(--gold);
+  border: 1.5px solid var(--pink);
   display: inline-flex; align-items: center; justify-content: center;
-  font-family: var(--font-display); font-size: 12px; color: var(--gold-bright);
+  font-family: var(--font-display); font-size: 12px; color: var(--pink-bright);
 }
 .booking-nav { display: flex; gap: 24px; font-size: 14px; color: var(--text-dim); align-items: center; }
-.booking-nav a.active { color: var(--gold-bright); }
+.booking-nav a.active { color: var(--pink-bright); }
 .booking-nav a:hover { color: var(--text); }
 .booking-main { max-width: 640px; margin: 0 auto; padding: 48px 24px; }
 .booking-user { font-size: 13px; color: var(--text); }
@@ -35,26 +35,33 @@
   background: var(--surface);
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-md);
-  padding: 18px;
+  overflow: hidden;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
+.prod-card:hover { transform: translateY(-3px); box-shadow: 0 12px 26px rgba(0,0,0,0.35); border-color: var(--pink-dim); }
 
-.prod-icon {
-  width: 34px; height: 34px;
-  border-radius: 9px;
-  background: var(--surface-2);
-  border: 1px solid var(--surface-border);
-  margin-bottom: 14px;
+.prod-foto {
   position: relative;
+  aspect-ratio: 1 / 1;
+  background: var(--surface-2);
 }
-.prod-icon::after {
-  content: '';
-  position: absolute; inset: 9px;
-  border: 1.5px solid var(--gold-bright);
-  border-radius: 3px;
-}
+.prod-foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
+.prod-badge-agotado, .prod-badge-bajo {
+  position: absolute; top: 10px; left: 10px;
+  font-size: 10.5px; font-weight: 600;
+  padding: 4px 10px; border-radius: 999px;
+}
+.prod-badge-agotado { background: rgba(217,100,95,0.85); color: #fff; }
+.prod-badge-bajo { background: rgba(217,164,65,0.9); color: #1a1305; }
+
+.prod-info { padding: 16px; }
 .prod-name { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
-.prod-price { font-family: var(--font-display); font-size: 18px; color: var(--gold-bright); margin-bottom: 8px; }
+
+.prod-precio-fila { display: flex; align-items: baseline; gap: 6px; margin-bottom: 6px; }
+.prod-price { font-family: var(--font-display); font-size: 19px; color: var(--pink-bright); }
+.prod-unidad { font-size: 11.5px; color: var(--text-faint); }
+
 .prod-stock { font-size: 12px; color: var(--text-dim); }
 .prod-stock.low { color: var(--warning); }
 
@@ -73,7 +80,7 @@
   position: sticky; bottom: 20px;
   margin-top: 30px;
   background: var(--surface);
-  border: 1px solid var(--gold-dim);
+  border: 1px solid var(--pink-dim);
   border-radius: var(--radius-md);
   padding: 18px 22px;
   display: flex; justify-content: space-between; align-items: center;
@@ -83,7 +90,13 @@
 .cart-summary .btn-gold { width: auto; padding: 12px 24px; }
 
 @media (max-width: 640px) {
-  .prod-grid { grid-template-columns: 1fr 1fr; }
-  .booking-top { padding: 18px 20px; }
-  .booking-nav { gap: 14px; }
+  .prod-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .booking-top { padding: 14px 16px; flex-wrap: wrap; row-gap: 10px; }
+  .booking-nav { gap: 10px; font-size: 12px; flex-wrap: wrap; row-gap: 6px; }
+  .booking-main { padding: 24px 14px; }
+  .cart-summary { flex-direction: column; align-items: stretch; gap: 12px; padding: 16px; }
+  .cart-summary .btn-gold { width: 100%; }
+}
+@media (max-width: 420px) {
+  .booking-user { display: none; }
 }

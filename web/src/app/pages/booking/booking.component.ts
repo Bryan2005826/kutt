@@ -1,20 +1,23 @@
 import { Component, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { AuthService } from '../../services/auth.service';
+import { LoginModalComponent } from '../../components/login-modal/login-modal.component';
 
 @Component({
   selector: 'app-booking',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, LoginModalComponent],
   templateUrl: './booking.component.html',
   styleUrl: './booking.component.css'
 })
 export class BookingComponent {
+  negocioId: number;
   paso = signal(1);
   confirmando = signal(false);
+  mostrarLoginModal = signal(false);
 
   barberoElegido = signal<number | null>(null);
   adicionalesElegidos = signal<number[]>([]);
@@ -23,12 +26,21 @@ export class BookingComponent {
   notas = '';
   telefono = '';
 
-  constructor(public data: DataService, public auth: AuthService, private router: Router) {
+  constructor(private route: ActivatedRoute, public data: DataService, public auth: AuthService, private router: Router) {
+    this.negocioId = Number(this.route.snapshot.paramMap.get('id'));
+
+    // Multi-tenant: el equipo y los adicionales que se muestran aquí son SOLO
+    // los de este negocio, no los de toda la plataforma.
+    this.data.cargarBarberos(this.negocioId);
+    this.data.cargarAdicionales(this.negocioId);
+
     const clienteExistente = this.data.clientes().find(c => c.correo === this.auth.usuario()?.correo);
     if (clienteExistente && clienteExistente.telefono && clienteExistente.telefono !== 'No registrado') {
       this.telefono = clienteExistente.telefono;
     }
   }
+
+  negocio = computed(() => this.data.negocios().find(n => n.id === this.negocioId));
 
   totalAdicionales = computed(() =>
     this.data.adicionales()
@@ -36,7 +48,7 @@ export class BookingComponent {
       .reduce((sum, a) => sum + a.precio, 0)
   );
 
-  totalEstimado = computed(() => this.data.configuracion().servicioPrecio + this.totalAdicionales());
+  totalEstimado = computed(() => (this.negocio()?.servicioPrecio ?? 0) + this.totalAdicionales());
 
   nombresAdicionalesElegidos = computed(() =>
     this.data.adicionales()
@@ -72,11 +84,31 @@ export class BookingComponent {
   }
 
   confirmar() {
+    // El paso final (agendar de verdad) sí necesita sesión: si aún no ha
+    // iniciado sesión, mostramos el modal aquí mismo, sin perder los pasos
+    // que ya llenó (barbero, servicio, fecha, hora, etc.).
+    if (!this.auth.usuario()) {
+      this.mostrarLoginModal.set(true);
+      return;
+    }
+    this.confirmarDeVerdad();
+  }
+
+  loginExitoso() {
+    this.mostrarLoginModal.set(false);
+    this.confirmarDeVerdad();
+  }
+
+  cerrarLoginModal() {
+    this.mostrarLoginModal.set(false);
+  }
+
+  private confirmarDeVerdad() {
     const usuario = this.auth.usuario();
     const nombreCliente = usuario ? usuario.nombre : 'Cliente';
     this.confirmando.set(true);
     this.data.agendarCita(
-      nombreCliente, this.telefono, this.barberoElegido(), this.adicionalesElegidos(), this.fecha, this.hora, this.notas,
+      this.negocioId, nombreCliente, this.telefono, this.barberoElegido(), this.adicionalesElegidos(), this.fecha, this.hora, this.notas,
       creada => this.router.navigate(['/pagar/cita', creada.id])
     );
   }

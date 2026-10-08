@@ -33,17 +33,32 @@
         <div class="check-circle">✓</div>
         <h1>¡Listo, ya pagaste!</h1>
         <p class="pago-detalle">Escaneaste el QR y tu pago de {{ formatPrecio(r.total) }} quedó confirmado con {{ r.metodoPago }}.</p>
-        <div class="qr-box"></div>
+        <img class="qr-box" [src]="qrImageUrl(r)" alt="Código QR del pago">
       </ng-container>
       <ng-template #ticket>
         <div class="ticket-icon">🎫</div>
         <h1>Tu reserva quedó lista</h1>
         <p class="pago-detalle">Vas a pagar {{ formatPrecio(r.total) }} en efectivo. Presenta este ticket QR el día de tu cita para pagar.</p>
-        <div class="qr-box"></div>
+        <img class="qr-box" [src]="qrImageUrl(r)" alt="Código QR del ticket">
       </ng-template>
 
+      <!-- NUEVO: enviar los datos de la cita/venta por WhatsApp -->
+      <div class="acciones-whatsapp" *ngIf="tipo === 'cita' && (hayWhatsAppAdmin() || hayWhatsAppBarbero(r))">
+        <a *ngIf="hayWhatsAppAdmin()" [href]="linkWhatsAppAdmin(r)" target="_blank" rel="noopener" class="btn-whatsapp">
+          📲 Enviar al administrador
+        </a>
+        <a *ngIf="hayWhatsAppBarbero(r)" [href]="linkWhatsAppBarbero(r)" target="_blank" rel="noopener" class="btn-whatsapp">
+          📲 Enviar al peluquero
+        </a>
+      </div>
+      <div class="acciones-whatsapp" *ngIf="tipo === 'venta' && hayWhatsAppAdmin()">
+        <a [href]="linkWhatsAppAdmin(r)" target="_blank" rel="noopener" class="btn-whatsapp">
+          📲 Enviar comprobante al administrador
+        </a>
+      </div>
+
       <a routerLink="/mis-citas" class="btn-outline" style="margin-top:18px; width:auto; display:inline-flex; padding:12px 22px;" *ngIf="tipo === 'cita'">Ver mis citas</a>
-      <a routerLink="/productos" class="btn-outline" style="margin-top:18px; width:auto; display:inline-flex; padding:12px 22px;" *ngIf="tipo === 'venta'">Seguir comprando</a>
+      <a [routerLink]="['/negocio', r.negocioId, 'productos']" class="btn-outline" style="margin-top:18px; width:auto; display:inline-flex; padding:12px 22px;" *ngIf="tipo === 'venta'">Seguir comprando</a>
     </section>
   </main>
 

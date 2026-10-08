@@ -21,3 +21,13 @@ export const adminNegocioGuard: CanActivateFn = () => {
   router.navigate(['/login']);
   return false;
 };
+
+export const superAdminGuard: CanActivateFn = () => {
+  const auth = inject(AuthService);
+  const router = inject(Router);
+
+  if (auth.esSuperAdmin()) return true;
+
+  router.navigate(['/login']);
+  return false;
+};

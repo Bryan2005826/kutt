@@ -1,0 +1,93 @@
+<div class="booking-shell" *ngIf="negocio() as n">
+  <header class="booking-top">
+    <a routerLink="/" class="booking-brand">
+      <span class="booking-mark">K</span> Kutt
+    </a>
+    <div class="booking-nav">
+      <a routerLink="/descubrir">← Volver a Descubrir</a>
+      <ng-container *ngIf="auth.usuario(); else invitado">
+        <span class="booking-user">{{ auth.usuario()?.nombre }}</span>
+        <button class="booking-logout" (click)="auth.logout()">Salir</button>
+      </ng-container>
+      <ng-template #invitado>
+        <a routerLink="/login">Iniciar sesión</a>
+      </ng-template>
+    </div>
+  </header>
+
+  <div class="portada" [style.backgroundImage]="n.portadaUrl ? 'url(' + n.portadaUrl + ')' : null"></div>
+
+  <main class="booking-main--ancho perfil-main">
+    <div class="cabecera-negocio">
+      <div class="logo-negocio" [style.backgroundImage]="n.logoUrl ? 'url(' + n.logoUrl + ')' : null">
+        <span *ngIf="!n.logoUrl">{{ n.nombre.charAt(0) }}</span>
+      </div>
+      <div class="datos-negocio">
+        <div class="fila-nombre">
+          <h1>{{ n.nombre }}</h1>
+          <span class="badge-verificado" *ngIf="n.verificado">✓ Verificado</span>
+        </div>
+        <p class="rubro">{{ nombreRubro(n.rubro) }} · {{ n.direccion }}</p>
+        <p class="rating-linea" *ngIf="resenas().length > 0">
+          ⭐ {{ promedio().toFixed(1) }} · {{ resenas().length }} reseñas
+        </p>
+      </div>
+      <button class="btn-favorito-grande" [class.activo]="esFavorito()" (click)="toggleFavorito()">
+        {{ esFavorito() ? '♥ En favoritos' : '♡ Agregar a favoritos' }}
+      </button>
+    </div>
+
+    <div class="acciones-cta">
+      <a [routerLink]="['/negocio', n.id, 'agendar']" class="btn-gold" style="width:auto">Reservar una cita</a>
+      <a [routerLink]="['/negocio', n.id, 'productos']" class="btn-outline" style="width:auto">Ver productos</a>
+    </div>
+
+    <section class="bloque">
+      <h2>Servicio y adicionales</h2>
+      <div class="lista-servicios">
+        <div class="servicio-item destacado">
+          <span>{{ n.servicioNombre }}</span>
+          <strong>{{ formatPrecio(n.servicioPrecio || 0) }}</strong>
+        </div>
+        <div class="servicio-item" *ngFor="let a of data.adicionales()">
+          <span>{{ a.nombre }}</span>
+          <strong>{{ formatPrecio(a.precio) }}</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="bloque" *ngIf="data.barberos().length > 0">
+      <h2>Nuestro equipo</h2>
+      <div class="equipo-grid">
+        <div class="equipo-card" *ngFor="let b of data.barberos()">
+          <img [src]="b.fotoUrl" [alt]="b.nombre">
+          <span>{{ b.nombre }}</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="bloque">
+      <h2>Reseñas de clientes</h2>
+      <div class="resena-item" *ngFor="let r of resenas()">
+        <div class="resena-cabecera">
+          <strong>{{ r.clienteNombre }}</strong>
+          <span class="resena-estrellas">
+            <span *ngFor="let e of estrellas(r.calificacion)">{{ e ? '⭐' : '' }}</span>
+          </span>
+          <span class="resena-fecha">{{ r.fecha }}</span>
+        </div>
+        <p>{{ r.comentario }}</p>
+      </div>
+      <p class="sin-resenas" *ngIf="resenas().length === 0">Este negocio todavía no tiene reseñas.</p>
+    </section>
+  </main>
+</div>
+
+<div class="booking-shell" *ngIf="!negocio()">
+  <main class="booking-main">
+    <p>No encontramos este negocio.</p>
+    <a routerLink="/descubrir" class="btn-outline" style="width:auto">Volver a Descubrir</a>
+  </main>
+</div>
+
+<app-login-modal *ngIf="mostrarLoginModal()" (exito)="loginExitoso()" (cerrar)="cerrarLoginModal()"></app-login-modal>

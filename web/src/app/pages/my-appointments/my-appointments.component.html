@@ -4,9 +4,10 @@
       <span class="booking-mark">K</span> Kutt
     </a>
     <div class="booking-nav">
-      <a routerLink="/agendar">Agendar cita</a>
+      <a routerLink="/descubrir">Descubrir</a>
       <a routerLink="/mis-citas" class="active">Mis citas</a>
-      <a routerLink="/productos">Productos</a>
+      <a routerLink="/favoritos">Favoritos</a>
+      <a routerLink="/perfil">Mi perfil</a>
       <span class="booking-user" *ngIf="auth.usuario()">{{ auth.usuario()?.nombre }}</span>
       <button class="booking-logout" *ngIf="auth.usuario()" (click)="auth.logout()">Salir</button>
     </div>
@@ -17,7 +18,7 @@
 
     <div class="mc-empty" *ngIf="misCitas().length === 0">
       <p>Todavía no tienes citas agendadas.</p>
-      <a routerLink="/agendar" class="btn-gold" style="width:auto; display:inline-flex; margin-top:14px;">Agendar cita</a>
+      <a routerLink="/descubrir" class="btn-gold" style="width:auto; display:inline-flex; margin-top:14px;">Buscar un negocio</a>
     </div>
 
     <div class="mc-card" *ngFor="let c of misCitas()">
@@ -35,6 +36,31 @@
           <button class="mc-reprogramar" (click)="abrirReprogramar(c.id)">Reprogramar</button>
           <button class="mc-cancel" (click)="cancelar(c.id)">Cancelar</button>
         </div>
+        <div class="mc-actions" *ngIf="c.estado === 'Finalizada'">
+          <button class="mc-reprogramar" *ngIf="calificacionEnviada() !== c.id" (click)="abrirCalificar(c.id)">Calificar servicio</button>
+          <span class="mc-gracias" *ngIf="calificacionEnviada() === c.id">¡Gracias por tu opinión! ⭐</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel de calificar -->
+    <div class="reprogramar-panel" *ngIf="citaCalificando() !== null">
+      <div class="reprogramar-card">
+        <div class="reprogramar-head">
+          <h2>¿Cómo estuvo el servicio?</h2>
+          <button class="checkout-close" (click)="cerrarCalificar()">✕</button>
+        </div>
+
+        <div class="estrellas-selector">
+          <button *ngFor="let n of [1,2,3,4,5]" [class.activa]="n <= calificacionSeleccionada()" (click)="calificacionSeleccionada.set(n)">★</button>
+        </div>
+
+        <div class="field">
+          <label>Cuéntanos más (opcional)</label>
+          <textarea [(ngModel)]="comentarioCalificacion" name="comentarioCalificacion" placeholder="Escribe tu comentario..."></textarea>
+        </div>
+
+        <button class="btn-gold" (click)="enviarCalificacion()">Enviar calificación</button>
       </div>
     </div>
 

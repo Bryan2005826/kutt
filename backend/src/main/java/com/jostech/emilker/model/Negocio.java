@@ -26,6 +26,18 @@ public class Negocio {
 
     private boolean verificado = false;
 
+    // coordenadas para mostrar el negocio en el mapa de Descubrir
+    private Double latitud;
+    private Double longitud;
+
+    // ---- NUEVO: multi-tenant real. Antes esto era una fila global compartida
+    // por todos los negocios (tabla "configuracion"); ahora cada negocio tiene
+    // su propio servicio base, precio y WhatsApp para recibir el QR ----
+    private String servicioNombre = "Servicio base";
+    private double servicioPrecio = 0;
+    private String whatsapp = "";
+    private String notificacionDestino = "";
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -55,4 +67,22 @@ public class Negocio {
 
     public boolean isVerificado() { return verificado; }
     public void setVerificado(boolean verificado) { this.verificado = verificado; }
+
+    public Double getLatitud() { return latitud; }
+    public void setLatitud(Double latitud) { this.latitud = latitud; }
+
+    public Double getLongitud() { return longitud; }
+    public void setLongitud(Double longitud) { this.longitud = longitud; }
+
+    public String getServicioNombre() { return servicioNombre; }
+    public void setServicioNombre(String servicioNombre) { this.servicioNombre = servicioNombre; }
+
+    public double getServicioPrecio() { return servicioPrecio; }
+    public void setServicioPrecio(double servicioPrecio) { this.servicioPrecio = servicioPrecio; }
+
+    public String getWhatsapp() { return whatsapp; }
+    public void setWhatsapp(String whatsapp) { this.whatsapp = whatsapp; }
+
+    public String getNotificacionDestino() { return notificacionDestino; }
+    public void setNotificacionDestino(String notificacionDestino) { this.notificacionDestino = notificacionDestino; }
 }

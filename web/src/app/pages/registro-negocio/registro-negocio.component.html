@@ -6,7 +6,11 @@
     <p class="kutt-section-label">Tus datos</p>
     <div class="kutt-field"><label>Tu nombre</label><input [(ngModel)]="nombre" name="nombre"></div>
     <div class="kutt-field"><label>Correo electrónico</label><input type="email" [(ngModel)]="correo" name="correo"></div>
-    <div class="kutt-field"><label>Contraseña</label><input type="password" [(ngModel)]="password" name="password"></div>
+    <div class="kutt-field">
+      <label>Contraseña</label>
+      <input type="password" [(ngModel)]="password" name="password">
+      <span class="kutt-hint">Mínimo 8 caracteres, combinando letras y números.</span>
+    </div>
 
     <p class="kutt-section-label">Datos del negocio</p>
     <div class="kutt-field"><label>Nombre del negocio</label><input [(ngModel)]="nombreNegocio" name="nombreNegocio"></div>
@@ -28,7 +32,14 @@
     <div class="kutt-field"><label>URL del logo del negocio</label><input [(ngModel)]="logoUrl" name="logoUrl" placeholder="https://..."></div>
     <div class="kutt-field"><label>URL de la foto de portada</label><input [(ngModel)]="portadaUrl" name="portadaUrl" placeholder="https://..."></div>
 
+    <label class="kutt-checkbox">
+      <input type="checkbox" [(ngModel)]="aceptaTerminos" name="aceptaTerminos">
+      Acepto los <a href="javascript:void(0)" (click)="mostrarTerminos.set(true)">términos y condiciones y la política de tratamiento de datos</a>
+    </label>
+
     <p class="kutt-error" *ngIf="error()">{{ error() }}</p>
+
+    <div class="g-recaptcha" data-sitekey="6LeradAtAAAAAODAjjHylub4EuGnF9SvR1k6R4kN"></div>
 
     <button class="kutt-btn-primary" [disabled]="cargando()" (click)="continuar()">
       {{ cargando() ? 'Creando negocio...' : 'Continuar' }}
@@ -37,3 +48,5 @@
     <p class="kutt-switch">¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a></p>
   </div>
 </div>
+
+<app-terminos-condiciones *ngIf="mostrarTerminos()" (cerrar)="mostrarTerminos.set(false)"></app-terminos-condiciones>

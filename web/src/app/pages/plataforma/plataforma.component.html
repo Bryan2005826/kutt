@@ -1,0 +1,70 @@
+<div class="plat-shell">
+  <header class="plat-top">
+    <div class="plat-brand">
+      <span class="plat-crown">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M3 8l4 3 5-6 5 6 4-3-2 10H5L3 8z" fill="#e8352e"/><circle cx="12" cy="19" r="1.4" fill="#e8352e"/></svg>
+      </span>
+      <span>Kutt <em>· Panel de plataforma</em></span>
+    </div>
+    <div class="plat-user">
+      <span>{{ auth.usuario()?.nombre }}</span>
+      <button (click)="auth.logout()">Salir</button>
+    </div>
+  </header>
+
+  <main class="plat-main" *ngIf="resumen() as r">
+    <p class="plat-eyebrow">Resumen general</p>
+    <h1>Toda la plataforma, de un vistazo</h1>
+
+    <div class="plat-metrics">
+      <div class="plat-metric">
+        <p class="plat-metric-label">Negocios registrados</p>
+        <p class="plat-metric-value">{{ r.totalNegocios }}</p>
+      </div>
+      <div class="plat-metric">
+        <p class="plat-metric-label">Negocios verificados</p>
+        <p class="plat-metric-value">{{ r.negociosVerificados }}</p>
+      </div>
+      <div class="plat-metric">
+        <p class="plat-metric-label">Clientes registrados</p>
+        <p class="plat-metric-value">{{ r.totalClientes }}</p>
+      </div>
+      <div class="plat-metric">
+        <p class="plat-metric-label">Citas totales</p>
+        <p class="plat-metric-value">{{ r.totalCitas }}</p>
+      </div>
+    </div>
+
+    <div class="plat-panels">
+      <div class="plat-panel">
+        <h2>Negocios por rubro</h2>
+        <div class="bar-row" *ngFor="let f of filasPorRubro()">
+          <span class="bar-label">{{ f.rubro }}</span>
+          <div class="bar-track"><div class="bar-fill" [style.width.%]="f.porcentaje"></div></div>
+          <span class="bar-value">{{ f.cantidad }}</span>
+        </div>
+      </div>
+
+      <div class="plat-panel">
+        <h2>Negocios en la plataforma</h2>
+        <table class="plat-table">
+          <thead><tr><th>Nombre</th><th>Rubro</th><th>Ubicación</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let n of negocios()">
+              <td>{{ n.nombre }}</td>
+              <td>{{ nombreRubro(n.rubro) }}</td>
+              <td>{{ n.direccion }}</td>
+              <td>
+                <span class="plat-badge" [class.verificado]="n.verificado">{{ n.verificado ? 'Verificado' : 'Sin verificar' }}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <main class="plat-main" *ngIf="!resumen()">
+    <p>Cargando el resumen de la plataforma...</p>
+  </main>
+</div>

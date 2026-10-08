@@ -1,8 +1,17 @@
-import { Component, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
+import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { mensajeDeError } from '../../utils/error.util';
+
+interface SlideCarrusel {
+  imagen: string;
+  titulo: string;
+  detalle: string;
+}
+
+declare var grecaptcha: any; // NUEVO — variable global que carga el script de Google
 
 @Component({
   selector: 'app-login',
@@ -11,7 +20,7 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit, OnDestroy {
   mostrarRoles = signal(false);
   cargando = signal(false);
   error = signal<string | null>(null);
@@ -19,7 +28,45 @@ export class LoginComponent {
   correo = '';
   password = '';
 
-  constructor(private auth: AuthService, private router: Router) {}
+  // Fotos reales del negocio, por rubro
+  slides: SlideCarrusel[] = [
+    { imagen: 'assets/carousel/barberia.jpg', titulo: 'Barbería', detalle: 'Agenda tu corte con el barbero de tu preferencia' },
+    { imagen: 'assets/carousel/unas.jpg', titulo: 'Uñas', detalle: 'Reserva tu manicure en el salón que más te guste' },
+    { imagen: 'assets/carousel/estetica.jpg', titulo: 'Estética', detalle: 'Encuentra centros de estética cerca de ti' },
+  ];
+
+  slideActual = signal(0);
+  private intervalo?: ReturnType<typeof setInterval>;
+
+  constructor(private auth: AuthService, private router: Router, private location: Location) {}
+
+  ngOnInit() {
+    this.intervalo = setInterval(() => this.siguienteSlide(), 4500);
+  }
+
+  ngOnDestroy() {
+    if (this.intervalo) clearInterval(this.intervalo);
+  }
+
+  // NUEVO: botón "← Volver" arriba de todo, para cuando alguien entra a
+  // /login desde el nav de Descubrir/una cita/etc. y se arrepiente. Si hay
+  // historial de navegación regresamos a la página anterior; si no (ej.
+  // entraron directo por el link), lo mandamos a Descubrir.
+  volver() {
+    if (window.history.length > 1) {
+      this.location.back();
+    } else {
+      this.router.navigate(['/descubrir']);
+    }
+  }
+
+  siguienteSlide() {
+    this.slideActual.update(i => (i + 1) % this.slides.length);
+  }
+
+  irASlide(i: number) {
+    this.slideActual.set(i);
+  }
 
   toggleRoles() {
     this.mostrarRoles.update(v => !v);
@@ -31,26 +78,56 @@ export class LoginComponent {
       this.error.set('Ingresa tu correo y contraseña.');
       return;
     }
+
+    // NUEVO: validar reCAPTCHA antes de llamar al backend
+    const recaptchaToken = typeof grecaptcha !== 'undefined' ? grecaptcha.getResponse() : '';
+    if (!recaptchaToken) {
+      this.error.set('Por favor marca el reCAPTCHA antes de continuar.');
+      return;
+    }
+
     this.error.set(null);
     this.cargando.set(true);
 
-    this.auth.login(this.correo, this.password).subscribe({
+    this.auth.login(this.correo, this.password, recaptchaToken).subscribe({
       next: res => {
         this.cargando.set(false);
-        this.router.navigate([res.rol === 'ADMIN_NEGOCIO' ? '/dashboard' : '/agendar']);
+        const destino = res.rol === 'ADMIN_NEGOCIO' ? '/dashboard' : res.rol === 'SUPER_ADMIN' ? '/plataforma' : '/descubrir';
+        this.router.navigate([destino]);
       },
       error: err => {
+        if (typeof grecaptcha !== 'undefined') grecaptcha.reset(); // NUEVO
         this.cargando.set(false);
-        this.error.set(err?.error ?? 'Correo o contraseña incorrectos.');
+        this.error.set(mensajeDeError(err, 'Correo o contraseña incorrectos.'));
       }
     });
   }
 
-  continuarConGoogle() {
-    this.error.set('El acceso con Google se conectará próximamente. Usa correo y contraseña por ahora.');
+  async continuarConGoogle() {
+    this.error.set(null);
+    this.cargando.set(true);
+    try {
+      const res = await this.auth.loginConGoogle('CLIENTE');
+      const destino = res.rol === 'ADMIN_NEGOCIO' ? '/dashboard' : res.rol === 'SUPER_ADMIN' ? '/plataforma' : '/descubrir';
+      this.router.navigate([destino]);
+    } catch (err: any) {
+      this.error.set(mensajeDeError(err, 'No se pudo iniciar sesión con Google. Intenta de nuevo.'));
+    } finally {
+      this.cargando.set(false);
+    }
   }
 
-  continuarConFacebook() {
-    this.error.set('El acceso con Facebook se conectará próximamente. Usa correo y contraseña por ahora.');
+  async continuarConFacebook() {
+    this.error.set(null);
+    this.cargando.set(true);
+    try {
+      const res = await this.auth.loginConFacebook('CLIENTE');
+      const destino = res.rol === 'ADMIN_NEGOCIO' ? '/dashboard' : res.rol === 'SUPER_ADMIN' ? '/plataforma' : '/descubrir';
+      this.router.navigate([destino]);
+    } catch (err: any) {
+      this.error.set(mensajeDeError(err, 'No se pudo iniciar sesión con Facebook. Intenta de nuevo.'));
+    } finally {
+      this.cargando.set(false);
+    }
   }
 }

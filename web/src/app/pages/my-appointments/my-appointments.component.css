@@ -8,15 +8,15 @@
   border-bottom: 1px solid var(--surface-border);
 }
 .booking-brand { font-family: var(--font-display); font-size: 16px; display: flex; align-items: center; gap: 8px; }
-.booking-brand em { font-style: normal; color: var(--gold-bright); }
+.booking-brand em { font-style: normal; color: var(--pink-bright); }
 .booking-mark {
   width: 26px; height: 26px; border-radius: 50%;
-  border: 1.5px solid var(--gold);
+  border: 1.5px solid var(--pink);
   display: inline-flex; align-items: center; justify-content: center;
-  font-family: var(--font-display); font-size: 12px; color: var(--gold-bright);
+  font-family: var(--font-display); font-size: 12px; color: var(--pink-bright);
 }
 .booking-nav { display: flex; gap: 24px; font-size: 14px; color: var(--text-dim); align-items: center; }
-.booking-nav a.active { color: var(--gold-bright); }
+.booking-nav a.active { color: var(--pink-bright); }
 .booking-nav a:hover { color: var(--text); }
 .booking-main { max-width: 640px; margin: 0 auto; padding: 48px 24px; }
 
@@ -41,6 +41,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
   margin-bottom: 12px;
 }
 
@@ -52,7 +54,7 @@
 .mc-actions { display: flex; gap: 12px; }
 .mc-cancel { background: transparent; color: var(--danger); font-size: 12px; }
 .mc-cancel:hover { text-decoration: underline; }
-.mc-reprogramar { background: transparent; color: var(--gold-bright); font-size: 12px; }
+.mc-reprogramar { background: transparent; color: var(--pink-bright); font-size: 12px; }
 .mc-reprogramar:hover { text-decoration: underline; }
 
 .reprogramar-panel {
@@ -84,10 +86,24 @@
   font-size: 13px;
   color: var(--text);
 }
-.option-sm:hover { border-color: var(--gold); }
-.option-sm.selected { background: var(--gold-bright); color: #1a1305; border-color: var(--gold-bright); font-weight: 600; }
+.option-sm:hover { border-color: var(--pink); }
+.option-sm.selected { background: var(--pink-bright); color: #1a1305; border-color: var(--pink-bright); font-weight: 600; }
 
 @media (max-width: 640px) {
-  .booking-top { padding: 18px 20px; }
-  .booking-nav { gap: 14px; }
+  .booking-top { padding: 14px 16px; flex-wrap: wrap; row-gap: 10px; }
+  .booking-nav { gap: 10px; font-size: 12px; flex-wrap: wrap; row-gap: 6px; }
+  .booking-main { padding: 24px 14px; }
+  .mc-card { flex-direction: column; align-items: flex-start; }
+  .mc-right { align-items: flex-start; width: 100%; }
+  .mc-actions { width: 100%; }
+  .reprogramar-card { padding: 22px 18px; }
 }
+@media (max-width: 420px) {
+  .booking-user { display: none; }
+}
+
+.mc-gracias { font-size: 12.5px; color: var(--success); }
+
+.estrellas-selector { display: flex; gap: 8px; margin: 16px 0 20px; font-size: 30px; }
+.estrellas-selector button { background: transparent; color: var(--surface-border); }
+.estrellas-selector button.activa { color: var(--pink-bright); }

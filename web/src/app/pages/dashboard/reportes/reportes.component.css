@@ -4,7 +4,7 @@
   align-items: flex-end;
   margin-bottom: 26px;
 }
-.eyebrow { font-size: 13px; color: var(--gold); margin-bottom: 6px; }
+.eyebrow { font-size: 13px; color: var(--pink); margin-bottom: 6px; }
 .content-header h1 { font-size: 26px; }
 
 .metrics {
@@ -49,7 +49,7 @@
 .bar-label { color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bar-track { height: 8px; background: var(--surface-2); border-radius: 999px; overflow: hidden; }
 .bar-fill { height: 100%; background: var(--success); border-radius: 999px; }
-.bar-fill.gold { background: var(--gold-bright); }
+.bar-fill.gold { background: var(--pink-bright); }
 .bar-value { text-align: right; color: var(--text-dim); }
 
 .empty-hint { font-size: 13px; color: var(--text-dim); padding: 10px 0; }
@@ -57,4 +57,9 @@
 @media (max-width: 900px) {
   .metrics { grid-template-columns: repeat(2, 1fr); }
   .panels { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  .content-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .metrics { grid-template-columns: 1fr; }
+  .bar-row { grid-template-columns: 84px 1fr 26px; gap: 8px; font-size: 12px; }
 }

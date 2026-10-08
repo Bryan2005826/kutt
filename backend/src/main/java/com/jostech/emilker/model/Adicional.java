@@ -10,11 +10,17 @@ public class Adicional {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // NUEVO: a que negocio pertenece este adicional (multi-tenant real)
+    private Long negocioId;
+
     private String nombre;
     private double precio;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
+    public Long getNegocioId() { return negocioId; }
+    public void setNegocioId(Long negocioId) { this.negocioId = negocioId; }
 
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }

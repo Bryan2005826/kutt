@@ -1,12 +1,18 @@
 import { Routes } from '@angular/router';
-import { LandingComponent } from './pages/landing/landing.component';
 import { LoginComponent } from './pages/login/login.component';
 import { RegistroUsuarioComponent } from './pages/registro-usuario/registro-usuario.component';
 import { RegistroNegocioComponent } from './pages/registro-negocio/registro-negocio.component';
+import { OlvidePasswordComponent } from './pages/olvide-password/olvide-password.component';
+import { RestablecerPasswordComponent } from './pages/restablecer-password/restablecer-password.component';
 import { BookingComponent } from './pages/booking/booking.component';
 import { MyAppointmentsComponent } from './pages/my-appointments/my-appointments.component';
 import { ProductsComponent } from './pages/products/products.component';
 import { PagoComponent } from './pages/pago/pago.component';
+import { DescubrirComponent } from './pages/descubrir/descubrir.component';
+import { NegocioPerfilComponent } from './pages/negocio-perfil/negocio-perfil.component';
+import { FavoritosComponent } from './pages/favoritos/favoritos.component';
+import { PerfilUsuarioComponent } from './pages/perfil-usuario/perfil-usuario.component';
+import { PlataformaComponent } from './pages/plataforma/plataforma.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { DashboardHomeComponent } from './pages/dashboard/home/dashboard-home.component';
 import { AgendaComponent } from './pages/dashboard/agenda/agenda.component';
@@ -15,17 +21,28 @@ import { InventarioComponent } from './pages/dashboard/inventario/inventario.com
 import { VentasComponent } from './pages/dashboard/ventas/ventas.component';
 import { ReportesComponent } from './pages/dashboard/reportes/reportes.component';
 import { AjustesComponent } from './pages/dashboard/ajustes/ajustes.component';
-import { clienteGuard, adminNegocioGuard } from './guards/auth.guard';
+import { clienteGuard, adminNegocioGuard, superAdminGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-  { path: '', component: LandingComponent },
+  // Descubrir es la puerta de entrada publica: cualquiera puede "chismosear"
+  // el catalogo de negocios sin iniciar sesion. Solo se pide login mas
+  // adelante, justo en el momento de dar like, confirmar una cita o pagar.
+  { path: '', redirectTo: 'descubrir', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'registro/usuario', component: RegistroUsuarioComponent },
   { path: 'registro/negocio', component: RegistroNegocioComponent },
-  { path: 'agendar', component: BookingComponent, canActivate: [clienteGuard] },
+  { path: 'olvide-password', component: OlvidePasswordComponent },
+  { path: 'restablecer-password', component: RestablecerPasswordComponent },
+  { path: 'descubrir', component: DescubrirComponent },
+  { path: 'negocio/:id', component: NegocioPerfilComponent },
+  // Multi-tenant: agendar y ver productos siempre es DENTRO de un negocio concreto
+  { path: 'negocio/:id/agendar', component: BookingComponent },
+  { path: 'negocio/:id/productos', component: ProductsComponent },
+  { path: 'favoritos', component: FavoritosComponent, canActivate: [clienteGuard] },
+  { path: 'perfil', component: PerfilUsuarioComponent, canActivate: [clienteGuard] },
   { path: 'mis-citas', component: MyAppointmentsComponent, canActivate: [clienteGuard] },
-  { path: 'productos', component: ProductsComponent, canActivate: [clienteGuard] },
   { path: 'pagar/:tipo/:id', component: PagoComponent, canActivate: [clienteGuard] },
+  { path: 'plataforma', component: PlataformaComponent, canActivate: [superAdminGuard] },
   {
     path: 'dashboard',
     component: DashboardComponent,

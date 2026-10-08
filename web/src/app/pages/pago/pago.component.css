@@ -10,9 +10,9 @@
 }
 .pago-mark {
   width: 26px; height: 26px; border-radius: 50%;
-  border: 1.5px solid var(--gold);
+  border: 1.5px solid var(--pink);
   display: inline-flex; align-items: center; justify-content: center;
-  font-family: var(--font-display); font-size: 12px; color: var(--gold-bright);
+  font-family: var(--font-display); font-size: 12px; color: var(--pink-bright);
 }
 
 .pago-main { max-width: 480px; margin: 0 auto; padding: 48px 24px; }
@@ -25,7 +25,7 @@
   text-align: center;
 }
 
-.eyebrow { font-size: 13px; color: var(--gold); margin-bottom: 8px; }
+.eyebrow { font-size: 13px; color: var(--pink); margin-bottom: 8px; }
 .pago-total { font-family: var(--font-display); font-size: 40px; color: var(--text); margin-bottom: 6px; }
 .pago-detalle { font-size: 14px; color: var(--text-dim); margin-bottom: 22px; }
 
@@ -42,8 +42,8 @@
   align-items: center;
   text-align: left;
 }
-.metodo-option:hover { border-color: var(--gold); }
-.metodo-option.selected { border-color: var(--gold-bright); background: rgba(199,154,75,0.12); }
+.metodo-option:hover { border-color: var(--pink); }
+.metodo-option.selected { border-color: var(--pink-bright); background: rgba(199,154,75,0.12); }
 .metodo-nombre { font-size: 14px; color: var(--text); font-weight: 600; }
 .metodo-tipo { font-size: 11px; color: var(--text-dim); }
 
@@ -58,13 +58,34 @@
 .resultado h1 { font-size: 22px; color: var(--text); margin-bottom: 8px; font-family: var(--font-display); }
 
 .qr-box {
-  width: 160px; height: 160px;
-  margin: 10px auto 0;
+  width: 180px; height: 180px;
+  margin: 14px auto 0;
   border-radius: var(--radius-sm);
-  background:
-    repeating-linear-gradient(0deg, var(--text) 0 6px, transparent 6px 12px),
-    repeating-linear-gradient(90deg, var(--text) 0 6px, transparent 6px 12px);
-  background-blend-mode: screen;
-  background-color: #fff;
-  opacity: 0.92;
+  background: #fff;
+  padding: 10px;
+  box-sizing: border-box;
+  display: block;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+/* NUEVO: botones para enviar los datos del pago por WhatsApp */
+.acciones-whatsapp {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
+  margin-top: 18px;
+}
+.btn-whatsapp {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: #25D366; color: #fff; padding: 10px 18px;
+  border-radius: var(--radius-sm); font-weight: 600; font-size: 13.5px;
+  text-decoration: none; transition: filter 0.15s ease;
+}
+.btn-whatsapp:hover { filter: brightness(1.08); }
+
+@media (max-width: 600px) {
+  .pago-top { padding: 14px 16px; }
+  .pago-main { padding: 24px 14px; }
+  .pago-card { padding: 22px 16px; }
+  .pago-total { font-size: 32px; }
+  .qr-box { width: 150px; height: 150px; }
+  .btn-whatsapp { width: 100%; justify-content: center; }
 }

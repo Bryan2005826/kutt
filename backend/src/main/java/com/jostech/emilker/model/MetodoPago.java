@@ -10,6 +10,9 @@ public class MetodoPago {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // NUEVO: a que negocio pertenece este metodo de pago (multi-tenant real)
+    private Long negocioId;
+
     private String nombre;
 
     // DIGITAL (genera QR de pago real) | EFECTIVO (genera ticket QR de reserva)
@@ -20,6 +23,9 @@ public class MetodoPago {
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
+    public Long getNegocioId() { return negocioId; }
+    public void setNegocioId(Long negocioId) { this.negocioId = negocioId; }
 
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }

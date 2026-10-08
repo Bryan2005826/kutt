@@ -1,0 +1,25 @@
+:host { display: block; min-height: 100vh; }
+
+.cabecera-perfil { display: flex; align-items: center; gap: 16px; margin-bottom: 10px; }
+.avatar-perfil {
+  width: 60px; height: 60px; border-radius: 50%;
+  background: var(--surface-2); border: 2px solid var(--pink);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 24px; color: var(--pink-bright);
+}
+.cabecera-perfil h2 { font-size: 19px; }
+.cabecera-perfil p { font-size: 13px; color: var(--text-dim); }
+
+.resumen-mini { font-size: 13px; color: var(--text-dim); margin-bottom: 28px; }
+
+.subtitulo-seccion { font-size: 15px; margin-bottom: 16px; padding-top: 14px; border-top: 1px solid var(--surface-border); }
+
+.genero-row { display: flex; gap: 16px; }
+.radio-inline { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text); }
+
+.checkbox-ubicacion { display: flex; align-items: flex-start; gap: 9px; font-size: 12.5px; color: var(--text-dim); margin: 4px 0 22px; line-height: 1.4; }
+
+@media (max-width: 600px) {
+  .cabecera-perfil { flex-direction: column; align-items: flex-start; text-align: left; gap: 10px; }
+  .genero-row { flex-direction: column; gap: 8px; }
+}

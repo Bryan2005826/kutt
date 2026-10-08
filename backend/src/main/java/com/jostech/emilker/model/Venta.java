@@ -10,6 +10,9 @@ public class Venta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // NUEVO: a que negocio pertenece esta venta (multi-tenant real)
+    private Long negocioId;
+
     private String cliente;
     private String detalle;
     private double total;
@@ -24,6 +27,9 @@ public class Venta {
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
+    public Long getNegocioId() { return negocioId; }
+    public void setNegocioId(Long negocioId) { this.negocioId = negocioId; }
 
     public String getCliente() { return cliente; }
     public void setCliente(String cliente) { this.cliente = cliente; }

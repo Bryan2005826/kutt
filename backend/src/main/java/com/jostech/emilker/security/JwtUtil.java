@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -12,10 +13,14 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    // Clave fija para entorno local / academico.
-    // En un entorno real esta clave debe ir en una variable de entorno, nunca en el codigo.
-    private final SecretKey clave = Keys.hmacShaKeyFor(
-            "emilker-barber-shop-clave-secreta-super-larga-para-firmar-jwt-local".getBytes());
+    // La clave sale de app.jwt.secret (application.properties), que a su vez
+    // toma la variable de entorno JWT_SECRET si existe. Trae un valor por
+    // defecto solo para que el proyecto funcione de una en local.
+    private final SecretKey clave;
+
+    public JwtUtil(@Value("${app.jwt.secret}") String secreto) {
+        this.clave = Keys.hmacShaKeyFor(secreto.getBytes());
+    }
 
     private final long expiracionMs = 1000L * 60 * 60 * 12; // 12 horas
 

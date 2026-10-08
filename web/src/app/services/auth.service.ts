@@ -2,8 +2,11 @@ import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
+import { initializeApp } from 'firebase/app';
+import { getAuth, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup } from 'firebase/auth';
+import { environment } from '../../environments/environment';
 
-export type Rol = 'CLIENTE' | 'ADMIN_NEGOCIO';
+export type Rol = 'CLIENTE' | 'ADMIN_NEGOCIO' | 'SUPER_ADMIN';
 
 export interface AuthUser {
   nombre: string;
@@ -23,6 +26,7 @@ export interface RegistroClienteRequest {
   correo: string;
   password: string;
   rol: 'CLIENTE';
+  recaptchaToken?: string;
   apellidos?: string;
   telefono?: string;
   departamento?: string;
@@ -38,6 +42,7 @@ export interface RegistroNegocioRequest {
   correo: string;
   password: string;
   rol: 'ADMIN_NEGOCIO';
+  recaptchaToken?: string;
   nombreNegocio?: string;
   rubro?: string;
   telefonoFijoNegocio?: string;
@@ -45,11 +50,19 @@ export interface RegistroNegocioRequest {
   direccionNegocio?: string;
   logoUrl?: string;
   portadaUrl?: string;
+  // Coordenadas ya geocodificadas a partir de la dirección real del negocio,
+  // para que el pin en el mapa de Descubrir quede en el sitio correcto.
+  latitudNegocio?: number;
+  longitudNegocio?: number;
 }
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private api = 'http://localhost:8080/api/auth';
+  private api = environment.apiUrl + '/auth';
+
+  // Firebase se inicializa una sola vez, apenas arranca la app
+  private firebaseApp = initializeApp(environment.firebase);
+  private firebaseAuth = getAuth(this.firebaseApp);
 
   usuario = signal<AuthUser | null>(this.leerUsuarioGuardado());
   token = signal<string | null>(localStorage.getItem('kutt_token'));
@@ -73,9 +86,52 @@ export class AuthService {
       .pipe(tap(res => this.guardarSesion(res)));
   }
 
-  login(correo: string, password: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.api}/login`, { correo, password })
+  // NUEVO: ahora recibe también el recaptchaToken y lo manda al backend
+  login(correo: string, password: string, recaptchaToken?: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.api}/login`, { correo, password, recaptchaToken })
       .pipe(tap(res => this.guardarSesion(res)));
+  }
+
+  // Login/registro con Google. rol solo se usa si es la primera vez que esa
+  // persona entra (para saber si es Cliente o Admin de negocio); si la cuenta
+  // ya existe, el backend ignora el rol y respeta el que ya tenía.
+  async loginConGoogle(rol: 'CLIENTE' | 'ADMIN_NEGOCIO'): Promise<AuthResponse> {
+    const proveedor = new GoogleAuthProvider();
+    const resultado = await signInWithPopup(this.firebaseAuth, proveedor);
+    const idToken = await resultado.user.getIdToken();
+    return this.loginConFirebase(idToken, rol);
+  }
+
+  async loginConFacebook(rol: 'CLIENTE' | 'ADMIN_NEGOCIO'): Promise<AuthResponse> {
+    const proveedor = new FacebookAuthProvider();
+    const resultado = await signInWithPopup(this.firebaseAuth, proveedor);
+    const idToken = await resultado.user.getIdToken();
+    return this.loginConFirebase(idToken, rol);
+  }
+
+  // El backend verifica ese idToken directamente con Firebase (no confiamos
+  // en nada de lo que mande el navegador sin verificar), y de ahi genera
+  // nuestro propio token JWT, igual que en el login normal.
+  private loginConFirebase(idToken: string, rol: 'CLIENTE' | 'ADMIN_NEGOCIO'): Promise<AuthResponse> {
+    return new Promise((resolve, reject) => {
+      this.http.post<AuthResponse>(`${this.api}/firebase`, { idToken, rol }).subscribe({
+        next: res => { this.guardarSesion(res); resolve(res); },
+        error: err => reject(err)
+      });
+    });
+  }
+
+  // CU: recuperar contraseña olvidada — paso 1, pedir el link por correo.
+  // El backend siempre responde el mismo mensaje exista o no esa cuenta
+  // (para no revelar qué correos están registrados), así que aquí no hay
+  // un "error" real salvo que el servidor esté caído.
+  solicitarRecuperacion(correo: string): Observable<string> {
+    return this.http.post(`${this.api}/recuperar`, { correo }, { responseType: 'text' });
+  }
+
+  // CU: recuperar contraseña olvidada — paso 2, token del link + contraseña nueva.
+  restablecerPassword(token: string, nuevaPassword: string): Observable<string> {
+    return this.http.post(`${this.api}/restablecer`, { token, nuevaPassword }, { responseType: 'text' });
   }
 
   logout() {
@@ -88,5 +144,9 @@ export class AuthService {
 
   esAdminNegocio(): boolean {
     return this.usuario()?.rol === 'ADMIN_NEGOCIO';
+  }
+
+  esSuperAdmin(): boolean {
+    return this.usuario()?.rol === 'SUPER_ADMIN';
   }
 }

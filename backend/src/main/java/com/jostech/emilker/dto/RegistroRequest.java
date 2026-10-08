@@ -5,6 +5,7 @@ public class RegistroRequest {
     private String correo;
     private String password;
     private String rol; // opcional: CLIENTE (por defecto) o ADMIN_NEGOCIO
+    private String recaptchaToken; // igual que en login: confirma que quien se registra es una persona real
 
     // ---- perfil de Cliente ----
     private String apellidos;
@@ -22,6 +23,8 @@ public class RegistroRequest {
     private String telefonoFijoNegocio;
     private String departamentoNegocio;
     private String direccionNegocio;
+    private Double latitudNegocio;
+    private Double longitudNegocio;
     private String logoUrl;
     private String portadaUrl;
 
@@ -36,6 +39,9 @@ public class RegistroRequest {
 
     public String getRol() { return rol; }
     public void setRol(String rol) { this.rol = rol; }
+
+    public String getRecaptchaToken() { return recaptchaToken; }
+    public void setRecaptchaToken(String recaptchaToken) { this.recaptchaToken = recaptchaToken; }
 
     public String getApellidos() { return apellidos; }
     public void setApellidos(String apellidos) { this.apellidos = apellidos; }
@@ -75,6 +81,12 @@ public class RegistroRequest {
 
     public String getDireccionNegocio() { return direccionNegocio; }
     public void setDireccionNegocio(String direccionNegocio) { this.direccionNegocio = direccionNegocio; }
+
+    public Double getLatitudNegocio() { return latitudNegocio; }
+    public void setLatitudNegocio(Double latitudNegocio) { this.latitudNegocio = latitudNegocio; }
+
+    public Double getLongitudNegocio() { return longitudNegocio; }
+    public void setLongitudNegocio(Double longitudNegocio) { this.longitudNegocio = longitudNegocio; }
 
     public String getLogoUrl() { return logoUrl; }
     public void setLogoUrl(String logoUrl) { this.logoUrl = logoUrl; }

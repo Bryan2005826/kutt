@@ -17,6 +17,11 @@ export class MyAppointmentsComponent {
   nuevaFecha = '';
   nuevaHora = '';
 
+  citaCalificando = signal<number | null>(null);
+  calificacionSeleccionada = signal(5);
+  comentarioCalificacion = '';
+  calificacionEnviada = signal<number | null>(null);
+
   constructor(public data: DataService, public auth: AuthService) {}
 
   misCitas = computed(() => {
@@ -48,5 +53,27 @@ export class MyAppointmentsComponent {
 
   formatPrecio(valor: number): string {
     return '$' + valor.toLocaleString('es-CO');
+  }
+
+  abrirCalificar(id: number) {
+    this.citaCalificando.set(id);
+    this.calificacionSeleccionada.set(5);
+    this.comentarioCalificacion = '';
+  }
+
+  cerrarCalificar() {
+    this.citaCalificando.set(null);
+  }
+
+  enviarCalificacion() {
+    const id = this.citaCalificando();
+    const usuario = this.auth.usuario();
+    if (id === null || !usuario) return;
+    // El negocio se toma como el negocio principal (id 1) hasta que las citas
+    // queden asociadas a un negocio especifico en la base de datos.
+    this.data.calificarNegocio(1, usuario.nombre, usuario.correo, this.calificacionSeleccionada(), this.comentarioCalificacion, () => {
+      this.calificacionEnviada.set(id);
+      this.citaCalificando.set(null);
+    });
   }
 }

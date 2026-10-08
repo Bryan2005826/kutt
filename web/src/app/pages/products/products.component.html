@@ -4,31 +4,46 @@
       <span class="booking-mark">K</span> Kutt
     </a>
     <div class="booking-nav">
-      <a routerLink="/agendar">Agendar cita</a>
-      <a routerLink="/mis-citas">Mis citas</a>
-      <a routerLink="/productos" class="active">Productos</a>
-      <span class="booking-user" *ngIf="auth.usuario()">{{ auth.usuario()?.nombre }}</span>
-      <button class="booking-logout" *ngIf="auth.usuario()" (click)="auth.logout()">Salir</button>
+      <a routerLink="/descubrir">Descubrir</a>
+      <ng-container *ngIf="auth.usuario(); else invitado">
+        <a routerLink="/mis-citas">Mis citas</a>
+        <a routerLink="/favoritos">Favoritos</a>
+        <a routerLink="/perfil">Mi perfil</a>
+        <span class="booking-user">{{ auth.usuario()?.nombre }}</span>
+        <button class="booking-logout" (click)="auth.logout()">Salir</button>
+      </ng-container>
+      <ng-template #invitado>
+        <a routerLink="/login">Iniciar sesión</a>
+      </ng-template>
     </div>
   </header>
 
-  <main class="booking-main" style="max-width:900px;">
+  <main class="booking-main--ancho" style="max-width:960px;">
     <h2 style="font-size:22px; margin-bottom:6px;">Productos</h2>
     <p class="step-sub">Agrega lo que quieras y paga por separado, sin necesidad de una cita.</p>
 
     <div class="prod-grid">
       <div class="prod-card" *ngFor="let p of data.productos()">
-        <div class="prod-icon"></div>
-        <p class="prod-name">{{ p.nombre }}</p>
-        <p class="prod-price">{{ formatPrecio(p.precio) }}</p>
-        <p class="prod-stock" [class.low]="p.existencias <= p.minimo">
-          {{ p.existencias > 0 ? p.existencias + ' disponibles' : 'Agotado' }}
-        </p>
+        <div class="prod-foto">
+          <img [src]="p.fotoUrl || 'https://picsum.photos/seed/producto-generico/400/400'" [alt]="p.nombre">
+          <span class="prod-badge-agotado" *ngIf="p.existencias === 0">Agotado</span>
+          <span class="prod-badge-bajo" *ngIf="p.existencias > 0 && p.existencias <= p.minimo">Últimas unidades</span>
+        </div>
+        <div class="prod-info">
+          <p class="prod-name">{{ p.nombre }}</p>
+          <div class="prod-precio-fila">
+            <span class="prod-price">{{ formatPrecio(p.precio) }}</span>
+            <span class="prod-unidad">c/u</span>
+          </div>
+          <p class="prod-stock" [class.low]="p.existencias <= p.minimo">
+            {{ p.existencias > 0 ? p.existencias + ' unidades disponibles' : 'Sin existencias' }}
+          </p>
 
-        <div class="prod-cart-controls" *ngIf="p.existencias > 0">
-          <button (click)="quitar(p.id)" [disabled]="cantidadEnCarrito(p.id) === 0">\u2212</button>
-          <span>{{ cantidadEnCarrito(p.id) }}</span>
-          <button (click)="agregar(p.id)" [disabled]="cantidadEnCarrito(p.id) >= p.existencias">+</button>
+          <div class="prod-cart-controls" *ngIf="p.existencias > 0">
+            <button (click)="quitar(p.id)" [disabled]="cantidadEnCarrito(p.id) === 0" aria-label="Quitar uno">−</button>
+            <span>{{ cantidadEnCarrito(p.id) }}</span>
+            <button (click)="agregar(p.id)" [disabled]="cantidadEnCarrito(p.id) >= p.existencias" aria-label="Agregar uno">+</button>
+          </div>
         </div>
       </div>
     </div>
@@ -44,3 +59,5 @@
     </div>
   </main>
 </div>
+
+<app-login-modal *ngIf="mostrarLoginModal()" (exito)="loginExitoso()" (cerrar)="cerrarLoginModal()"></app-login-modal>

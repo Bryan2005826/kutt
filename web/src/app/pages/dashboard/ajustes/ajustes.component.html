@@ -6,11 +6,46 @@
 </header>
 
 <div class="panel form-panel">
+  <h2>Mi negocio</h2>
+  <div class="negocio-portada-preview" [style.backgroundImage]="negocioPortadaUrl ? 'url(' + negocioPortadaUrl + ')' : null">
+    <div class="negocio-logo-preview" [style.backgroundImage]="negocioLogoUrl ? 'url(' + negocioLogoUrl + ')' : null">
+      <span *ngIf="!negocioLogoUrl">{{ negocioNombre.charAt(0) }}</span>
+    </div>
+  </div>
+
+  <div class="form-row" style="margin-top:16px;">
+    <div class="field"><label>Nombre del negocio</label><input [(ngModel)]="negocioNombre" name="negocioNombre"></div>
+    <div class="field">
+      <label>Logo (elige uno de tu galería)</label>
+      <input type="file" accept="image/*" (change)="elegirLogo($event)">
+      <span class="subiendo-aviso" *ngIf="subiendoLogo()">Subiendo...</span>
+    </div>
+    <div class="field">
+      <label>Foto de portada (elige una de tu galería)</label>
+      <input type="file" accept="image/*" (change)="elegirPortada($event)">
+      <span class="subiendo-aviso" *ngIf="subiendoPortada()">Subiendo...</span>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="field"><label>Departamento</label><input [(ngModel)]="negocioDepartamento" name="negocioDepartamento" placeholder="Ej: Casanare"></div>
+    <div class="field"><label>Dirección</label><input [(ngModel)]="negocioDireccion" name="negocioDireccion" placeholder="Ej: Carrera 5 #8-40, Paz de Ariporo"></div>
+  </div>
+  <p class="subiendo-aviso" *ngIf="ubicandoNegocio()">Ubicando tu negocio en el mapa...</p>
+  <button class="btn-gold" style="width:auto" [disabled]="ubicandoNegocio()" (click)="guardarNegocio()">
+    {{ guardadoNegocio() ? 'Guardado ✓' : (ubicandoNegocio() ? 'Ubicando...' : 'Guardar cambios') }}
+  </button>
+</div>
+
+<div class="panel form-panel">
   <h2>Servicio base</h2>
   <div class="form-row">
     <div class="field"><label>Nombre</label><input [(ngModel)]="servicioNombre" name="servicioNombre"></div>
     <div class="field"><label>Precio</label><input type="number" [(ngModel)]="servicioPrecio" name="servicioPrecio"></div>
     <div class="field"><label>Notificaciones a</label><input [(ngModel)]="notificacionDestino" name="notificacionDestino" placeholder="correo o celular"></div>
+    <div class="field">
+      <label>WhatsApp del admin (recibe el QR de cada cita/venta)</label>
+      <input [(ngModel)]="whatsappAdmin" name="whatsappAdmin" placeholder="Ej: 573001234567">
+    </div>
   </div>
   <button class="btn-gold" style="width:auto" (click)="guardarServicio()">
     {{ guardadoServicio() ? 'Guardado ✓' : 'Guardar cambios' }}
@@ -59,9 +94,18 @@
       <button class="chip-remove" (click)="eliminarBarbero(b.id)">✕</button>
     </div>
   </div>
-  <div class="form-row" style="margin-top:14px; grid-template-columns: 1fr 1fr;">
+  <div class="form-row" style="margin-top:14px; grid-template-columns: 1fr 1fr 1fr;">
     <div class="field"><label>Nombre</label><input [(ngModel)]="nuevoBarberoNombre" name="nuevoBarberoNombre" placeholder="Ej: Miguel Ángel"></div>
-    <div class="field"><label>URL de la foto</label><input [(ngModel)]="nuevoBarberoFoto" name="nuevoBarberoFoto" placeholder="https://..."></div>
+    <div class="field">
+      <label>WhatsApp (recibe el QR de sus citas)</label>
+      <input [(ngModel)]="nuevoBarberoWhatsapp" name="nuevoBarberoWhatsapp" placeholder="Ej: 573001234567">
+    </div>
+    <div class="field">
+      <label>Foto (elige una de tu galería)</label>
+      <input type="file" accept="image/*" (change)="elegirFotoBarbero($event)">
+      <span class="subiendo-aviso" *ngIf="subiendoFotoBarbero()">Subiendo foto...</span>
+      <img *ngIf="nuevoBarberoFoto" [src]="nuevoBarberoFoto" alt="" class="mini-preview">
+    </div>
   </div>
   <button class="btn-outline" style="width:auto; padding:10px 18px;" (click)="agregarBarbero()">+ Agregar barbero</button>
 </div>

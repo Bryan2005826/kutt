@@ -37,6 +37,7 @@ métodos de pago, la configuración del servicio base y dos cuentas de prueba.
 
 - **Admin de negocio:** `emilker@barbershop.com` / `emilker123`
 - **Cliente:** `juan@correo.com` / `cliente123`
+- **Super Admin de la plataforma:** `admin@kutt.com` / `kutt123`
 
 ## Endpoints principales
 
@@ -68,6 +69,15 @@ métodos de pago, la configuración del servicio base y dos cuentas de prueba.
 | GET | /api/configuracion | Ver servicio base y notificaciones |
 | PUT | /api/configuracion | Editar servicio base y destino de notificaciones (Super Admin) |
 | GET | /api/ventas | Lista ventas |
+| GET | /api/negocios | Lista los negocios registrados |
+| GET | /api/resenas | Lista todas las reseñas |
+| GET | /api/resenas/negocio/{id} | Reseñas de un negocio |
+| POST | /api/resenas | Calificar un servicio |
+| GET | /api/favoritos/{correo} | Favoritos de un cliente |
+| POST | /api/favoritos | Agregar un negocio a favoritos |
+| DELETE | /api/favoritos | Quitar un negocio de favoritos |
+| GET | /api/plataforma/resumen | Resumen general de la plataforma (solo Super Admin) |
+| POST | /api/archivos/subir | Sube una foto (producto, personal) y devuelve su URL |
 
 ## Flujo de pago
 
@@ -79,8 +89,28 @@ cliente decide pagar (`POST /api/citas/{id}/pagar` o `POST /api/ventas/{id}/paga
 - Si el método es `EFECTIVO`, queda **Pendiente** y se genera un ticket QR de reserva, para
   cobrarse en persona el día de la cita.
 
+## Cómo desplegarlo en un servidor real
+
+Nada de lo sensible está quemado en el código: todo sale de variables de entorno, con
+valores por defecto para que siga funcionando igual en tu PC sin tocar nada. Al desplegar
+en un servidor, define estas variables según corresponda:
+
+| Variable | Para qué | Valor por defecto (local) |
+|---|---|---|
+| `PORT` | Puerto del servidor | `8080` |
+| `DB_URL` | Cadena de conexión a MySQL | `jdbc:mysql://localhost:3306/kutt_db...` |
+| `DB_USER` | Usuario de la base de datos | `root` |
+| `DB_PASSWORD` | Contraseña de la base de datos | (vacía) |
+| `JWT_SECRET` | Clave para firmar los tokens de sesión | una clave de desarrollo incluida |
+| `CORS_ORIGINS` | Dominios permitidos a consultar la API, separados por coma | `http://localhost:4200` |
+| `MAIL_USERNAME` / `MAIL_PASSWORD` | Envío real de recordatorios por correo (opcional) | sin configurar |
+
+Cualquier error inesperado del servidor devuelve un mensaje claro al usuario en vez de un
+stacktrace de Java (ver `ManejadorErrores`).
+
 ## Próximos pasos
 
-- Reemplazar el CORS abierto a `localhost:4200` por configuración de producción.
 - Integrar Firebase Authentication real para el login con Google/Facebook.
 - Conectar los métodos de pago digitales a una pasarela real.
+- Separar servicios, adicionales, productos y personal por negocio (multi-tenant real);
+  hoy son compartidos globalmente entre todos los negocios registrados.

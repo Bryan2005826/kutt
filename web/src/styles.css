@@ -8,10 +8,11 @@
   --gold-bright: #e3b565;
   --gold-dim: #8a6a34;
 
-  /* Paleta oficial de marca Kutt: rosa + negro + dorado */
-  --pink: #ff3d82;
-  --pink-bright: #ff6ba3;
-  --pink-dim: #a8285a;
+  /* Paleta oficial de marca Kutt: ahora con el mismo estilo del login
+     (fondo oscuro + rojo + tipografia tipo poster), en vez del rosa anterior */
+  --pink: #e8352e;
+  --pink-bright: #ff5147;
+  --pink-dim: #a5241f;
 
   --text: #f2efe9;
   --text-dim: #9296a0;
@@ -34,7 +35,16 @@
 html, body {
   margin: 0;
   padding: 0;
-  background: var(--bg);
+  /* Evita que algun elemento un poco mas ancho de la cuenta (ej. una tabla o
+     una imagen) genere scroll horizontal en celular, que es una de las cosas
+     que mas se sentia "descuadrada" en el modo movil */
+  overflow-x: hidden;
+  width: 100%;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(232,53,46,0.09), transparent 45%),
+    radial-gradient(circle at 100% 20%, rgba(199,154,75,0.05), transparent 40%),
+    var(--bg);
+  background-attachment: fixed;
   color: var(--text);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
@@ -58,7 +68,7 @@ button {
 }
 
 :focus-visible {
-  outline: 2px solid var(--gold-bright);
+  outline: 2px solid var(--pink-bright);
   outline-offset: 2px;
 }
 
@@ -80,21 +90,24 @@ button {
 }
 .field input:focus, .field select:focus, .field textarea:focus {
   outline: none;
-  border-color: var(--gold);
+  border-color: var(--pink);
 }
 .field textarea { resize: vertical; min-height: 70px; }
 
 .btn-gold {
-  background: var(--gold-bright);
-  color: #1a1305;
+  background: linear-gradient(135deg, var(--pink-bright), var(--pink));
+  color: #fff;
   border-radius: var(--radius-sm);
   padding: 13px 20px;
   font-size: 14px;
   font-weight: 600;
   width: 100%;
+  box-shadow: 0 6px 18px rgba(255, 61, 130, 0.28);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
 }
-.btn-gold:hover { background: var(--gold); }
-.btn-gold:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-gold:hover { filter: brightness(1.08); box-shadow: 0 8px 22px rgba(255, 61, 130, 0.4); transform: translateY(-1px); }
+.btn-gold:active { transform: translateY(0); }
+.btn-gold:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; transform: none; }
 
 .btn-outline {
   background: transparent;
@@ -108,8 +121,9 @@ button {
   align-items: center;
   justify-content: center;
   gap: 10px;
+  transition: border-color 0.15s ease, transform 0.15s ease;
 }
-.btn-outline:hover { border-color: var(--text-dim); }
+.btn-outline:hover { border-color: var(--pink-dim); transform: translateY(-1px); }
 
 .card-surface {
   background: var(--surface);
@@ -141,3 +155,58 @@ button {
 }
 .data-table td { padding: 12px; border-bottom: 1px solid var(--surface-border); }
 .data-table tr:last-child td { border-bottom: none; }
+
+/* ---------- Header compartido de las paginas de cliente (reusado por varios componentes) ---------- */
+.booking-shell { min-height: 100vh; }
+.booking-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 44px;
+  border-bottom: 1px solid var(--surface-border);
+}
+.booking-brand { font-family: var(--font-display); font-size: 16px; display: flex; align-items: center; gap: 8px; }
+.booking-brand em { font-style: normal; color: var(--pink-bright); }
+.booking-mark {
+  width: 26px; height: 26px; border-radius: 50%;
+  border: 1.5px solid var(--pink);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 12px; color: var(--pink-bright);
+}
+.booking-crown { width: 22px; height: 22px; }
+.booking-crown svg { width: 100%; height: 100%; }
+.booking-nav { display: flex; gap: 22px; font-size: 14px; color: var(--text-dim); align-items: center; }
+.booking-nav a.active { color: var(--pink-bright); }
+.booking-nav a:hover { color: var(--text); }
+.booking-user { font-size: 13px; color: var(--text); }
+.booking-logout { background: transparent; color: var(--text-faint); font-size: 13px; }
+.booking-logout:hover { color: var(--danger); }
+.booking-main { max-width: 640px; margin: 0 auto; padding: 48px 24px; }
+.booking-main--ancho { max-width: 1080px; margin: 0 auto; padding: 40px 32px; }
+.offline-banner {
+  background: rgba(217,100,95,0.12);
+  border: 1px solid rgba(217,100,95,0.35);
+  color: var(--danger);
+  font-size: 13px;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 22px;
+}
+@media (max-width: 700px) {
+  .booking-top { padding: 14px 16px; flex-wrap: wrap; row-gap: 10px; }
+  .booking-nav { gap: 10px; font-size: 12px; flex-wrap: wrap; row-gap: 8px; }
+  .booking-main { padding: 28px 16px; }
+  .booking-main--ancho { padding: 22px 16px; }
+}
+@media (max-width: 420px) {
+  .booking-nav { gap: 8px; font-size: 11.5px; }
+  .booking-user { display: none; }
+}
+
+/* Tablas dentro de paneles del dashboard: en vez de que las columnas se
+   aplasten y el texto se encime en celular, dejamos que ese panel puntual
+   se deslice horizontalmente sin romper el resto del layout. */
+@media (max-width: 700px) {
+  .panel:has(.data-table) { overflow-x: auto; }
+  .data-table { min-width: 480px; }
+}

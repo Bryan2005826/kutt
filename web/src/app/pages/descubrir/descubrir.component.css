@@ -1,0 +1,151 @@
+:host { display: block; min-height: 100vh; }
+
+.titulo-pagina { font-family: var(--font-display); font-size: 26px; margin-bottom: 4px; }
+.subtitulo-pagina { color: var(--text-dim); font-size: 14px; margin-bottom: 20px; }
+
+.buscador {
+  width: 100%;
+  background: var(--surface-2);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  padding: 13px 16px;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+.buscador:focus { outline: none; border-color: var(--pink); }
+
+.mapa-contenedor {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--surface-border);
+  margin-bottom: 22px;
+}
+.mapa { width: 100%; height: 300px; }
+/* Leaflet mete su propio z-index en los controles; lo bajamos para que no
+   quede flotando por encima del menu ni de otras cosas de la pagina */
+.mapa ::ng-deep .leaflet-top, .mapa ::ng-deep .leaflet-bottom { z-index: 5; }
+
+.tabs-rubro--desktop { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 26px; }
+.tabs-rubro--desktop button {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  color: var(--text-dim);
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 13px;
+}
+.tabs-rubro--desktop button.active { background: var(--pink); color: #fff; border-color: var(--pink); font-weight: 600; }
+
+/* Menú de categorías tipo hamburguesa, solo visible en celular */
+.tabs-rubro--movil { display: none; margin-bottom: 22px; position: relative; }
+
+.btn-menu-categorias {
+  width: 100%;
+  display: flex; align-items: center; gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  padding: 13px 16px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.icono-hamburguesa {
+  display: inline-flex; flex-direction: column; gap: 3px;
+  width: 18px;
+}
+.icono-hamburguesa span {
+  display: block; height: 2px; width: 100%;
+  background: var(--pink-bright);
+  border-radius: 2px;
+}
+
+.menu-categorias-desplegado {
+  position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  z-index: 20;
+  box-shadow: 0 14px 30px rgba(0,0,0,0.4);
+  display: flex; flex-direction: column;
+}
+.menu-categorias-desplegado button {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--surface-border);
+  color: var(--text-dim);
+  text-align: left;
+  padding: 13px 16px;
+  font-size: 14px;
+}
+.menu-categorias-desplegado button:last-child { border-bottom: none; }
+.menu-categorias-desplegado button.active { color: var(--pink-bright); font-weight: 600; }
+
+.negocio-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
+
+.negocio-card {
+  display: block;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  position: relative;
+  color: var(--text);
+}
+.negocio-card { transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease; }
+.negocio-card:hover { border-color: var(--pink-dim); transform: translateY(-3px); box-shadow: 0 12px 26px rgba(0,0,0,0.35); }
+
+.negocio-portada {
+  height: 110px;
+  background:
+    linear-gradient(135deg, rgba(232,53,46,0.12), transparent 60%),
+    linear-gradient(135deg, var(--surface-2), var(--surface));
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+/* si el negocio todavia no subio una foto de portada, dejamos una coronita
+   de marca de agua en vez de una caja completamente vacia */
+.negocio-portada::after {
+  content: '👑';
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px; opacity: 0.18;
+}
+.negocio-portada[style*="background-image"]::after { display: none; }
+
+.btn-favorito {
+  position: absolute; top: 10px; right: 10px;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(12,14,19,0.65);
+  color: #fff;
+  font-size: 15px;
+  display: flex; align-items: center; justify-content: center;
+}
+.btn-favorito.activo { color: var(--pink-bright); }
+
+.negocio-info { padding: 14px 16px; }
+.negocio-nombre-fila { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
+.negocio-nombre { font-weight: 600; font-size: 15px; }
+.badge-verificado { font-size: 10.5px; color: var(--success); background: rgba(76,175,125,0.12); padding: 2px 8px; border-radius: 999px; }
+.negocio-rubro { font-size: 12px; color: var(--pink-bright); }
+
+.negocio-meta { margin-top: 8px; display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; color: var(--text-dim); }
+.negocio-rating { color: var(--text); font-weight: 600; }
+
+.sin-resultados { text-align: center; color: var(--text-dim); padding: 40px 0; }
+
+@media (max-width: 700px) {
+  .titulo-pagina { font-size: 21px; }
+  .mapa { height: 220px; }
+  .negocio-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .tabs-rubro--desktop { display: none; }
+  .tabs-rubro--movil { display: block; }
+}
+@media (max-width: 420px) {
+  .negocio-grid { grid-template-columns: 1fr; }
+  .negocio-portada { height: 130px; }
+}

@@ -1,11 +1,31 @@
 <div class="kutt-auth-shell">
+  <button class="kutt-volver" (click)="volver()" aria-label="Volver">← Volver</button>
   <div class="kutt-auth-brand">
     <div class="kutt-crown">
-      <svg viewBox="0 0 24 24" fill="none"><path d="M3 8l4 3 5-6 5 6 4-3-2 10H5L3 8z" fill="#ff3d82"/><circle cx="12" cy="19" r="1.4" fill="#ff3d82"/></svg>
+      <svg viewBox="0 0 24 24" fill="none"><path d="M3 8l4 3 5-6 5 6 4-3-2 10H5L3 8z" fill="#e8352e"/><circle cx="12" cy="19" r="1.4" fill="#e8352e"/></svg>
     </div>
     <h1>KUTT</h1>
     <p class="kutt-tagline">Tu belleza, en buenas manos</p>
     <p class="kutt-desc">Reserva, compra y disfruta los mejores servicios de belleza y cuidado personal, cerca de ti.</p>
+
+    <div class="kutt-patches">
+      <span class="kutt-patch kutt-patch-1">✂️ BARBERÍA</span>
+      <span class="kutt-patch kutt-patch-2">💅 UÑAS</span>
+      <span class="kutt-patch kutt-patch-3">✨ ESTÉTICA</span>
+    </div>
+
+    <div class="kutt-carousel">
+      <div class="kutt-slide" *ngFor="let s of slides; let i = index" [class.active]="i === slideActual()"
+           [style.backgroundImage]="'url(' + s.imagen + ')'">
+        <div class="kutt-slide-overlay">
+          <p class="kutt-slide-title">{{ s.titulo }}</p>
+          <p class="kutt-slide-detail">{{ s.detalle }}</p>
+        </div>
+      </div>
+      <div class="kutt-slide-dots">
+        <button *ngFor="let s of slides; let i = index" [class.active]="i === slideActual()" (click)="irASlide(i)" [attr.aria-label]="'Ir a la imagen ' + (i + 1)"></button>
+      </div>
+    </div>
   </div>
 
   <div class="kutt-auth-panel">
@@ -23,10 +43,12 @@
 
       <p class="kutt-error" *ngIf="error()">{{ error() }}</p>
 
+      <div class="g-recaptcha" data-sitekey="6LeradAtAAAAAODAjjHylub4EuGnF9SvR1k6R4kN"></div>
+
       <button class="kutt-btn-primary" [disabled]="cargando()" (click)="entrar()">
         {{ cargando() ? 'Entrando...' : 'Entrar' }}
       </button>
-      <a class="kutt-forgot">¿Olvidaste tu contraseña?</a>
+      <a class="kutt-forgot" routerLink="/olvide-password">¿Olvidaste tu contraseña?</a>
 
       <div class="kutt-divider"><span>o continúa con</span></div>
 

@@ -1,0 +1,77 @@
+<div class="booking-shell">
+  <header class="booking-top">
+    <a routerLink="/" class="booking-brand">
+      <span class="booking-mark">K</span> Kutt
+    </a>
+    <div class="booking-nav">
+      <a routerLink="/descubrir" class="active">Descubrir</a>
+      <ng-container *ngIf="auth.usuario(); else invitado">
+        <a routerLink="/mis-citas">Mis citas</a>
+        <a routerLink="/favoritos">Favoritos</a>
+        <a routerLink="/perfil">Mi perfil</a>
+        <span class="booking-user">{{ auth.usuario()?.nombre }}</span>
+        <button class="booking-logout" (click)="auth.logout()">Salir</button>
+      </ng-container>
+      <ng-template #invitado>
+        <a routerLink="/login">Iniciar sesión</a>
+      </ng-template>
+    </div>
+  </header>
+
+  <main class="booking-main--ancho">
+    <h2 class="titulo-pagina">Negocios cerca de ti</h2>
+    <p class="subtitulo-pagina">Barberías, salones de uñas y centros de estética disponibles en Kutt.</p>
+
+    <input class="buscador" type="text" placeholder="Buscar por nombre o dirección..."
+           [value]="busqueda()" (input)="busqueda.set($any($event.target).value)">
+
+    <div class="mapa-contenedor">
+      <div #mapaEl class="mapa"></div>
+    </div>
+
+    <!-- En pantallas grandes: chips normales -->
+    <div class="tabs-rubro tabs-rubro--desktop">
+      <button *ngFor="let r of rubros" [class.active]="rubroActivo() === r" (click)="elegirRubro(r)">
+        {{ r === 'TODOS' ? 'Todos' : nombreRubro(r) }}
+      </button>
+    </div>
+
+    <!-- En celular: menú de 3 líneas que despliega las categorías -->
+    <div class="tabs-rubro--movil">
+      <button class="btn-menu-categorias" (click)="toggleMenuCategorias()">
+        <span class="icono-hamburguesa"><span></span><span></span><span></span></span>
+        <span>{{ rubroActivo() === 'TODOS' ? 'Todas las categorías' : nombreRubro(rubroActivo()) }}</span>
+      </button>
+      <div class="menu-categorias-desplegado" *ngIf="menuCategoriasAbierto()">
+        <button *ngFor="let r of rubros" [class.active]="rubroActivo() === r" (click)="elegirRubro(r)">
+          {{ r === 'TODOS' ? 'Todos' : nombreRubro(r) }}
+        </button>
+      </div>
+    </div>
+
+    <div class="negocio-grid">
+      <a class="negocio-card" *ngFor="let n of negociosFiltrados()" [routerLink]="['/negocio', n.id]">
+        <div class="negocio-portada" [style.backgroundImage]="n.portadaUrl ? 'url(' + n.portadaUrl + ')' : null"></div>
+        <button class="btn-favorito" [class.activo]="data.esFavorito(n.id)" (click)="toggleFavorito(n, $event)">♥</button>
+        <div class="negocio-info">
+          <div class="negocio-nombre-fila">
+            <span class="negocio-nombre">{{ n.nombre }}</span>
+            <span class="badge-verificado" *ngIf="n.verificado">✓ Verificado</span>
+          </div>
+          <span class="negocio-rubro">{{ nombreRubro(n.rubro) }}</span>
+          <div class="negocio-meta">
+            <span class="negocio-rating">⭐ {{ formatCalificacion(n) }}</span>
+            <span *ngIf="totalResenas(n) > 0">({{ totalResenas(n) }} reseñas)</span>
+            <span class="negocio-direccion">📍 {{ n.direccion }}</span>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <p class="sin-resultados" *ngIf="negociosFiltrados().length === 0">
+      No encontramos negocios con esos filtros. Prueba con otra búsqueda.
+    </p>
+  </main>
+</div>
+
+<app-login-modal *ngIf="mostrarLoginModal()" (exito)="loginExitoso()" (cerrar)="cerrarLoginModal()"></app-login-modal>

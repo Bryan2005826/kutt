@@ -3,11 +3,16 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { mensajeDeError } from '../../utils/error.util';
+import { errorDePassword } from '../../utils/password.util';
+import { TerminosCondicionesComponent } from '../../components/terminos-condiciones/terminos-condiciones.component';
+
+declare var grecaptcha: any;
 
 @Component({
   selector: 'app-registro-usuario',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, TerminosCondicionesComponent],
   templateUrl: './registro-usuario.component.html',
   styleUrl: './registro-usuario.component.css'
 })
@@ -23,6 +28,8 @@ export class RegistroUsuarioComponent {
   fechaNacimiento = '';
   direccion = '';
   permiteUbicacion = false;
+  aceptaTerminos = false;
+  mostrarTerminos = signal(false);
 
   cargando = signal(false);
   error = signal<string | null>(null);
@@ -34,6 +41,26 @@ export class RegistroUsuarioComponent {
       this.error.set('Completa al menos nombre, apellidos, correo y contraseña.');
       return;
     }
+
+    if (!this.aceptaTerminos) {
+      this.error.set('Debes aceptar los términos y condiciones para crear tu cuenta.');
+      return;
+    }
+
+    // Política de seguridad: contraseña mínima antes de siquiera llamar al backend.
+    const errorPassword = errorDePassword(this.password);
+    if (errorPassword) {
+      this.error.set(errorPassword);
+      return;
+    }
+
+    // Política de seguridad: reCAPTCHA también al registrarse, igual que en el login.
+    const recaptchaToken = typeof grecaptcha !== 'undefined' ? grecaptcha.getResponse() : '';
+    if (!recaptchaToken) {
+      this.error.set('Por favor marca el reCAPTCHA antes de continuar.');
+      return;
+    }
+
     this.error.set(null);
     this.cargando.set(true);
 
@@ -42,6 +69,7 @@ export class RegistroUsuarioComponent {
       correo: this.correo,
       password: this.password,
       rol: 'CLIENTE',
+      recaptchaToken,
       apellidos: this.apellidos,
       telefono: this.telefono,
       departamento: this.departamento,
@@ -53,11 +81,12 @@ export class RegistroUsuarioComponent {
     }).subscribe({
       next: () => {
         this.cargando.set(false);
-        this.router.navigate(['/agendar']);
+        this.router.navigate(['/descubrir']);
       },
       error: err => {
+        if (typeof grecaptcha !== 'undefined') grecaptcha.reset();
         this.cargando.set(false);
-        this.error.set(err?.error ?? 'No se pudo crear la cuenta.');
+        this.error.set(mensajeDeError(err, 'No se pudo crear la cuenta.'));
       }
     });
   }

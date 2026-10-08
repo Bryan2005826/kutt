@@ -3,6 +3,7 @@ package com.jostech.emilker.dto;
 import java.util.List;
 
 public class CrearCitaRequest {
+    private Long negocioId;
     private String cliente;
     private String telefonoCliente;
     private Long barberoId;
@@ -10,6 +11,9 @@ public class CrearCitaRequest {
     private String hora;
     private String notas;
     private List<Long> adicionalIds;
+
+    public Long getNegocioId() { return negocioId; }
+    public void setNegocioId(Long negocioId) { this.negocioId = negocioId; }
 
     public Long getBarberoId() { return barberoId; }
     public void setBarberoId(Long barberoId) { this.barberoId = barberoId; }

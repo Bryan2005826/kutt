@@ -1,14 +1,51 @@
-:host { display: block; min-height: 100vh; }
+/* =========================================================
+   ESTILO NUEVO "GRUNGE / STREETWEAR" — solo para el login,
+   inspirado en la referencia que mando el cliente (El Honesto Mike).
+   Ojo: esto NO toca las variables globales (--pink, etc.), asi que
+   el resto de la app sigue viendose igual que antes. Si les gusta
+   este look, despues lo llevamos a las demas paginas.
+   ========================================================= */
+
+:host {
+  display: block;
+  min-height: 100vh;
+  /* variables locales solo para esta pantalla */
+  --rojo: #e8352e;
+  --rojo-oscuro: #a5241f;
+  --font-poster: 'Anton', 'Impact', sans-serif;
+}
 
 .kutt-auth-shell {
   display: grid;
   grid-template-columns: 1fr 1fr;
   min-height: 100vh;
+  position: relative;
 }
 
-/* ---------- Columna de marca ---------- */
+/* Botón fijo arriba a la izquierda para volver a donde estaba antes de
+   entrar a iniciar sesión (Descubrir, el perfil de un negocio, etc.) */
+.kutt-volver {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 30;
+  background: rgba(10,10,10,0.65);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 9px 16px;
+  border-radius: 999px;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.kutt-volver:hover { background: rgba(232,53,46,0.85); border-color: var(--rojo); }
+
+/* ---------- Columna de marca (izquierda) ---------- */
 .kutt-auth-brand {
-  background: #0a0b0f;
+  background: #0a0a0a;
+  background-image:
+    repeating-linear-gradient(135deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 6px);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -16,31 +53,92 @@
   padding: 60px 70px;
   position: relative;
   overflow: hidden;
-}
-.kutt-auth-brand::before {
-  content: '';
-  position: absolute; top: -20%; right: -20%;
-  width: 60%; height: 60%;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,61,130,0.12), transparent 70%);
+  border-right: 3px solid var(--rojo);
 }
 
-.kutt-crown { width: 52px; height: 52px; margin-bottom: 18px; }
-.kutt-crown svg { width: 100%; height: 100%; }
+.kutt-crown { width: 46px; height: 46px; margin-bottom: 14px; }
+.kutt-crown svg { width: 100%; height: 100%; filter: drop-shadow(0 0 10px rgba(232,53,46,0.5)); }
 
 .kutt-auth-brand h1 {
-  font-family: var(--font-display);
-  font-size: 46px;
-  color: var(--text);
-  letter-spacing: 0.04em;
-  margin-bottom: 10px;
+  font-family: var(--font-poster);
+  font-weight: 400;
+  font-size: 76px;
+  line-height: 0.9;
+  letter-spacing: 0.02em;
+  color: #fff;
+  text-shadow: 4px 4px 0 var(--rojo);
+  margin-bottom: 16px;
 }
-.kutt-tagline { font-size: 16px; color: var(--pink-bright); margin-bottom: 22px; font-style: italic; }
-.kutt-desc { font-size: 15px; color: var(--text-dim); max-width: 34ch; line-height: 1.6; }
 
-/* ---------- Panel del formulario ---------- */
+.kutt-tagline {
+  display: inline-block;
+  font-family: var(--font-poster);
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #0a0a0a;
+  background: var(--rojo);
+  padding: 6px 14px;
+  transform: rotate(-2deg);
+  margin-bottom: 18px;
+}
+
+.kutt-desc { font-size: 14.5px; color: #a9a9a9; max-width: 36ch; line-height: 1.6; }
+
+/* ---------- Insignias tipo "sticker" ---------- */
+.kutt-patches { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+.kutt-patch {
+  font-family: var(--font-poster);
+  font-size: 11.5px;
+  letter-spacing: 0.03em;
+  color: #fff;
+  background: #17171a;
+  border: 2px dashed #444;
+  border-radius: 999px;
+  padding: 7px 14px;
+  white-space: nowrap;
+}
+.kutt-patch-1 { transform: rotate(-4deg); border-color: var(--rojo); }
+.kutt-patch-2 { transform: rotate(3deg); }
+.kutt-patch-3 { transform: rotate(-2deg); border-color: var(--rojo); }
+
+/* ---------- Carrusel de fotos ---------- */
+.kutt-carousel {
+  position: relative;
+  margin-top: 30px;
+  width: 100%;
+  max-width: 360px;
+  height: 230px;
+  border: 3px solid #fff;
+  outline: 3px solid #0a0a0a;
+  outline-offset: 3px;
+  overflow: hidden;
+  transform: rotate(-1deg);
+}
+.kutt-slide {
+  position: absolute; inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: grayscale(0.25) contrast(1.05);
+  opacity: 0;
+  transition: opacity 0.7s ease;
+}
+.kutt-slide.active { opacity: 1; }
+.kutt-slide-overlay {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 14px 16px 12px;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.92) 100%);
+}
+.kutt-slide-title { font-family: var(--font-poster); font-size: 16px; color: #fff; text-transform: uppercase; letter-spacing: 0.02em; }
+.kutt-slide-detail { font-size: 12px; color: rgba(255,255,255,0.75); margin-top: 2px; }
+
+.kutt-slide-dots { position: absolute; top: 12px; right: 14px; display: flex; gap: 6px; z-index: 2; }
+.kutt-slide-dots button { width: 8px; height: 8px; border-radius: 0; background: rgba(255,255,255,0.4); border: none; padding: 0; }
+.kutt-slide-dots button.active { background: var(--rojo); width: 20px; }
+
+/* ---------- Panel del formulario (derecha) ---------- */
 .kutt-auth-panel {
-  background: var(--bg);
+  background: #111112;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -48,87 +146,133 @@
 }
 
 .kutt-auth-card { width: 100%; max-width: 380px; }
-.kutt-auth-card h2 { font-size: 24px; color: var(--text); margin-bottom: 22px; }
+.kutt-auth-card h2 {
+  font-family: var(--font-poster);
+  font-size: 30px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: #fff;
+  margin-bottom: 26px;
+}
 
 .kutt-field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 16px; }
-.kutt-field label { font-size: 13px; color: var(--text-dim); }
+.kutt-field label {
+  font-family: var(--font-poster);
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #999;
+}
 .kutt-field input {
-  background: var(--surface-2);
-  border: 1px solid var(--surface-border);
-  border-radius: var(--radius-sm);
-  color: var(--text);
+  background: #1b1b1d;
+  border: 2px solid #2c2c2f;
+  border-radius: 4px;
+  color: #fff;
   padding: 13px 15px;
   font-size: 14px;
-  font-family: var(--font-body);
+  font-family: 'Inter', sans-serif;
 }
-.kutt-field input:focus { outline: none; border-color: var(--pink); }
+.kutt-field input:focus { outline: none; border-color: var(--rojo); }
 
-.kutt-error { font-size: 13px; color: var(--danger); margin-bottom: 12px; }
+.kutt-error { font-size: 13px; color: var(--rojo); margin-bottom: 12px; }
 
 .kutt-btn-primary {
-  background: var(--pink);
+  background: var(--rojo);
   color: #fff;
-  border-radius: 999px;
+  border-radius: 4px;
   padding: 14px 20px;
-  font-size: 14px;
-  font-weight: 700;
+  font-family: var(--font-poster);
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   width: 100%;
   margin-bottom: 12px;
+  box-shadow: 4px 4px 0 #000;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
-.kutt-btn-primary:hover { background: var(--pink-dim); }
-.kutt-btn-primary:disabled { opacity: 0.6; }
+.kutt-btn-primary:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #000; background: var(--rojo-oscuro); }
+.kutt-btn-primary:disabled { opacity: 0.6; box-shadow: none; transform: none; }
 
-.kutt-forgot { display: block; text-align: center; font-size: 12.5px; color: var(--text-dim); margin-bottom: 22px; }
-.kutt-forgot:hover { color: var(--text); }
+.kutt-forgot { display: block; text-align: center; font-size: 12.5px; color: #888; margin-bottom: 22px; }
+.kutt-forgot:hover { color: #fff; }
 
-.kutt-divider { display: flex; align-items: center; text-align: center; color: var(--text-faint); font-size: 12px; margin-bottom: 18px; }
-.kutt-divider::before, .kutt-divider::after { content: ''; flex: 1; height: 1px; background: var(--surface-border); }
+.kutt-divider { display: flex; align-items: center; text-align: center; color: #666; font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 18px; }
+.kutt-divider::before, .kutt-divider::after { content: ''; flex: 1; height: 2px; background: #2c2c2f; }
 .kutt-divider span { padding: 0 12px; }
 
 .kutt-btn-outline {
-  background: var(--surface);
-  border: 1px solid var(--surface-border);
-  color: var(--text);
-  border-radius: 999px;
+  background: transparent;
+  border: 2px solid #2c2c2f;
+  color: #fff;
+  border-radius: 4px;
   padding: 12px 18px;
   font-size: 13.5px;
+  font-weight: 600;
   width: 100%;
   margin-bottom: 10px;
 }
-.kutt-btn-outline:hover { border-color: var(--pink-dim); }
+.kutt-btn-outline:hover { border-color: var(--rojo); }
 
-.kutt-switch { text-align: center; font-size: 13px; color: var(--text-dim); margin: 18px 0 4px; }
-.kutt-switch a { color: var(--pink-bright); font-weight: 600; cursor: pointer; }
+.kutt-switch { text-align: center; font-size: 13px; color: #888; margin: 18px 0 4px; }
+.kutt-switch a { color: var(--rojo); font-weight: 700; cursor: pointer; text-transform: uppercase; font-size: 12.5px; letter-spacing: 0.03em; }
 
 .kutt-roles {
   margin-top: 18px;
-  background: var(--surface);
-  border: 1px solid var(--surface-border);
-  border-radius: var(--radius-md);
+  background: #17171a;
+  border: 2px dashed #333;
+  border-radius: 8px;
   padding: 18px;
 }
-.kutt-roles-label { font-size: 12.5px; color: var(--text-dim); text-align: center; margin-bottom: 12px; }
+.kutt-roles-label {
+  font-family: var(--font-poster);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #999;
+  text-align: center;
+  margin-bottom: 12px;
+}
 .kutt-roles-buttons { display: flex; gap: 10px; }
 .kutt-role-btn {
   flex: 1;
-  background: var(--surface-2);
-  border: 1px solid var(--surface-border);
-  border-radius: var(--radius-sm);
+  background: #1b1b1d;
+  border: 2px solid #2c2c2f;
+  border-radius: 4px;
   padding: 16px 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
-  color: var(--text);
-  font-weight: 600;
+  font-family: var(--font-poster);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #fff;
 }
-.kutt-role-btn:hover { border-color: var(--pink); }
+.kutt-role-btn:hover { border-color: var(--rojo); }
 .kutt-role-icon { font-size: 22px; }
 
-.kutt-note { font-size: 11px; color: var(--text-faint); text-align: center; margin-top: 20px; }
+.kutt-note { font-size: 11px; color: #555; text-align: center; margin-top: 20px; }
 
 @media (max-width: 880px) {
   .kutt-auth-shell { grid-template-columns: 1fr; }
-  .kutt-auth-brand { padding: 40px 30px; min-height: 220px; justify-content: center; }
+  .kutt-auth-brand {
+    padding: 36px 24px 28px;
+    align-items: center;
+    text-align: center;
+    border-right: none;
+    border-bottom: 3px solid var(--rojo);
+  }
+  .kutt-crown { margin: 0 auto 14px; }
+  .kutt-auth-brand h1 { font-size: 54px; }
+  .kutt-desc { max-width: none; }
+  .kutt-patches { justify-content: center; }
+  .kutt-carousel { max-width: 100%; height: 200px; margin-top: 22px; transform: none; }
+  .kutt-auth-panel { padding: 28px 20px 40px; }
+}
+
+@media (max-width: 380px) {
+  .kutt-auth-brand h1 { font-size: 42px; }
+  .kutt-carousel { height: 170px; }
+  .kutt-auth-card h2 { font-size: 24px; }
 }

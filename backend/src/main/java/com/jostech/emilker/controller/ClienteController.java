@@ -34,13 +34,20 @@ public class ClienteController {
                 });
     }
 
-    // CU-05: editar información del cliente
+    // CU-05: editar información del cliente (perfil completo)
     @PutMapping("/{id}")
     public Cliente editar(@PathVariable Long id, @RequestBody Cliente datos) {
         Cliente cliente = clienteRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("Cliente no encontrado: " + id));
         cliente.setNombre(datos.getNombre());
+        cliente.setApellidos(datos.getApellidos());
         cliente.setTelefono(datos.getTelefono());
+        cliente.setDepartamento(datos.getDepartamento());
+        cliente.setCiudad(datos.getCiudad());
+        cliente.setGenero(datos.getGenero());
+        cliente.setFechaNacimiento(datos.getFechaNacimiento());
+        cliente.setDireccion(datos.getDireccion());
+        cliente.setPermiteUbicacion(datos.isPermiteUbicacion());
         return clienteRepository.save(cliente);
     }
 }

@@ -18,15 +18,25 @@
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "assets": ["src/assets"],
-            "styles": ["src/styles.css"],
+            "allowedCommonJsDependencies": ["leaflet"],
+            "styles": ["src/styles.css", "node_modules/leaflet/dist/leaflet.css"],
             "scripts": []
           },
           "configurations": {
             "production": {
               "budgets": [
-                { "type": "initial", "maximumWarning": "1mb", "maximumError": "2mb" }
+                { "type": "initial", "maximumWarning": "3mb", "maximumError": "6mb" },
+                { "type": "anyComponentStyle", "maximumWarning": "6kb", "maximumError": "12kb" }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "optimization": {
+                "scripts": true,
+                "styles": true,
+                "fonts": false
+              },
+              "fileReplacements": [
+                { "replace": "src/environments/environment.ts", "with": "src/environments/environment.prod.ts" }
+              ]
             },
             "development": {
               "optimization": false,
@@ -46,5 +56,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "2da98694-9467-418e-ae38-d6795e87a539"
   }
 }

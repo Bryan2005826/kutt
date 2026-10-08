@@ -5,7 +5,7 @@
   margin-bottom: 30px;
 }
 
-.eyebrow { font-size: 13px; color: var(--gold); margin-bottom: 6px; }
+.eyebrow { font-size: 13px; color: var(--pink); margin-bottom: 6px; }
 .content-header h1 { font-size: 26px; }
 
 .metrics {
@@ -24,7 +24,7 @@
 
 .metric-label { font-size: 13px; color: var(--text-dim); margin-bottom: 8px; }
 .metric-value { font-family: var(--font-display); font-size: 26px; margin-bottom: 10px; }
-.metric-link { font-size: 12px; color: var(--gold-bright); }
+.metric-link { font-size: 12px; color: var(--pink-bright); }
 .metric-warn .metric-value { color: var(--warning); }
 
 .panels {
@@ -42,7 +42,7 @@
 
 .panel-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
 .panel-head h2 { font-size: 16px; font-family: var(--font-body); font-weight: 600; }
-.panel-action { font-size: 12px; color: var(--gold-bright); }
+.panel-action { font-size: 12px; color: var(--pink-bright); }
 
 .apt-row {
   display: grid;
@@ -74,4 +74,9 @@
 @media (max-width: 900px) {
   .metrics { grid-template-columns: repeat(2, 1fr); }
   .panels { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  .content-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .metrics { grid-template-columns: 1fr; }
+  .apt-row { grid-template-columns: 56px 1fr auto; gap: 8px; font-size: 13px; }
 }

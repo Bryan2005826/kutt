@@ -1,21 +1,28 @@
 import { Component, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, Router } from '@angular/router';
+import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { AuthService } from '../../services/auth.service';
+import { LoginModalComponent } from '../../components/login-modal/login-modal.component';
 
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, LoginModalComponent],
   templateUrl: './products.component.html',
   styleUrl: './products.component.css'
 })
 export class ProductsComponent {
+  negocioId: number;
   carrito = signal<Record<number, number>>({});
   comprando = signal(false);
+  mostrarLoginModal = signal(false);
 
-  constructor(public data: DataService, public auth: AuthService, private router: Router) {}
+  constructor(private route: ActivatedRoute, public data: DataService, public auth: AuthService, private router: Router) {
+    this.negocioId = Number(this.route.snapshot.paramMap.get('id'));
+    // Multi-tenant: solo los productos de ESTE negocio, no los de toda la plataforma
+    this.data.cargarProductos(this.negocioId);
+  }
 
   cantidadEnCarrito(productoId: number): number {
     return this.carrito()[productoId] ?? 0;
@@ -46,13 +53,32 @@ export class ProductsComponent {
   );
 
   comprar() {
+    // Igual que en agendar cita: se puede armar el carrito libremente, pero
+    // para confirmar la compra sí se necesita sesión.
+    if (!this.auth.usuario()) {
+      this.mostrarLoginModal.set(true);
+      return;
+    }
+    this.comprarDeVerdad();
+  }
+
+  loginExitoso() {
+    this.mostrarLoginModal.set(false);
+    this.comprarDeVerdad();
+  }
+
+  cerrarLoginModal() {
+    this.mostrarLoginModal.set(false);
+  }
+
+  private comprarDeVerdad() {
     const usuario = this.auth.usuario();
     const nombreCliente = usuario ? usuario.nombre : 'Cliente';
     const items = this.itemsCarrito().map(it => ({ productoId: it.producto.id, cantidad: it.cantidad }));
     if (items.length === 0) return;
 
     this.comprando.set(true);
-    this.data.comprarProductos(nombreCliente, items, venta => {
+    this.data.comprarProductos(this.negocioId, nombreCliente, items, venta => {
       this.comprando.set(false);
       this.router.navigate(['/pagar/venta', venta.id]);
     });
