@@ -71,7 +71,21 @@ public class DataSeeder implements CommandLineRunner {
             usuarioRepository.save(usuario("Kutt", "admin@kutt.com", "kutt123", "SUPER_ADMIN"));
         }
 
-        if (negocioRepository.count() == 0) {
+        // Los negocios demo se siembran uno por uno (ver sembrarNegociosDemo), no todos
+        // juntos detras de un unico "if count==0": asi, si la base de datos ya tenia un
+        // negocio real (por ejemplo el que tu registraste probando el formulario) antes de
+        // que corriera este seeder por primera vez, los 10 negocios demo no se pierden.
+        sembrarNegociosDemo();
+    }
+
+    // Crea los 10 negocios de demostracion que faltan. Es seguro llamarlo mas de una vez
+    // (incluso con negocios reales ya creados): cada negocio demo solo se crea si todavia
+    // no existe un negocio con su correo de administrador, asi que nunca duplica nada y
+    // nunca toca los negocios que de verdad registraron tus usuarios.
+    public int sembrarNegociosDemo() {
+        int contador = 0;
+
+        if (negocioRepository.findByAdminCorreo("emilker@barbershop.com").isEmpty()) {
             // ---- 1. Emilker Barber Shop (barbería, Yopal) ----
             Negocio emilker = negocio("Emilker Barber Shop", "BARBERIA", "(608) 123 4567", "Casanare",
                     "Calle principal, Yopal", "emilker@barbershop.com", true,
@@ -108,7 +122,10 @@ public class DataSeeder implements CommandLineRunner {
                     resena(emilker.getId(), "Juan David", "juan@correo.com", 5, "Excelente atención, muy puntuales.", "5 mayo"),
                     resena(emilker.getId(), "Carlos Torres", "carlos@correo.com", 4, "Buen servicio, el local es muy cómodo.", "3 mayo")
             ));
+            contador++;
+        }
 
+        if (negocioRepository.findByAdminCorreo("contacto@nailsstudio.com").isEmpty()) {
             // ---- 2. Nails Studio (uñas, Yopal) ----
             Negocio nails = negocio("Nails Studio", "UNAS", "(608) 234 5678", "Casanare",
                     "Cra 20 # 15-30, Yopal", "contacto@nailsstudio.com", true,
@@ -133,7 +150,10 @@ public class DataSeeder implements CommandLineRunner {
                     metodoPago(nails.getId(), "Efectivo", "EFECTIVO", "Pago en el local")
             ));
             resenaRepository.save(resena(nails.getId(), "Andrés Felipe", "andres@correo.com", 5, "Quedaron divinas, muy detallistas.", "2 mayo"));
+            contador++;
+        }
 
+        if (negocioRepository.findByAdminCorreo("contacto@glowestetica.com").isEmpty()) {
             // ---- 3. Glow Estética (estética, Yopal) ----
             Negocio glow = negocio("Glow Estética", "ESTETICA", "(608) 345 6789", "Casanare",
                     "Av. Central # 8-12, Yopal", "contacto@glowestetica.com", false,
@@ -156,7 +176,10 @@ public class DataSeeder implements CommandLineRunner {
                     metodoPago(glow.getId(), "Bancolombia", "DIGITAL", "Ahorros ****7788"),
                     metodoPago(glow.getId(), "Efectivo", "EFECTIVO", "Pago en el local")
             ));
+            contador++;
+        }
 
+        if (negocioRepository.findByAdminCorreo("elrey@barbershop.com").isEmpty()) {
             // ---- 4. NUEVO: El Rey del Fade Barbería (barbería, Yopal, otro sector) ----
             Negocio rey = negocio("El Rey del Fade Barbería", "BARBERIA", "(608) 456 7890", "Casanare",
                     "Cra 24 # 10-45, Yopal", "elrey@barbershop.com", true,
@@ -180,7 +203,10 @@ public class DataSeeder implements CommandLineRunner {
                     metodoPago(rey.getId(), "Efectivo", "EFECTIVO", "Pago en el local")
             ));
             resenaRepository.save(resena(rey.getId(), "Juan David", "juan@correo.com", 5, "El mejor fade de Yopal, sin duda.", "1 mayo"));
+            contador++;
+        }
 
+        if (negocioRepository.findByAdminCorreo("unasydetalles@correo.com").isEmpty()) {
             // ---- 5. NUEVO: Uñas & Detalles (uñas, Yopal, otro sector) ----
             Negocio unasDetalles = negocio("Uñas & Detalles", "UNAS", "(608) 567 8901", "Casanare",
                     "Cll 12 # 18-20, Yopal", "unasydetalles@correo.com", false,
@@ -203,7 +229,10 @@ public class DataSeeder implements CommandLineRunner {
                     metodoPago(unasDetalles.getId(), "Nequi", "DIGITAL", "300 555 6677"),
                     metodoPago(unasDetalles.getId(), "Efectivo", "EFECTIVO", "Pago en el local")
             ));
+            contador++;
+        }
 
+        if (negocioRepository.findByAdminCorreo("oasis@spa.com").isEmpty()) {
             // ---- 6. NUEVO: Oasis Spa & Relax (spa, Yopal) ----
             Negocio oasis = negocio("Oasis Spa & Relax", "SPA", "(608) 678 9012", "Casanare",
                     "Cll 8 # 22-40, Yopal", "oasis@spa.com", true,
@@ -227,7 +256,10 @@ public class DataSeeder implements CommandLineRunner {
                     metodoPago(oasis.getId(), "Efectivo", "EFECTIVO", "Pago en el local")
             ));
             resenaRepository.save(resena(oasis.getId(), "Carlos Torres", "carlos@correo.com", 5, "Salí completamente relajado, muy recomendado.", "28 abril"));
+            contador++;
+        }
 
+        if (negocioRepository.findByAdminCorreo("zen@spa.com").isEmpty()) {
             // ---- 7. NUEVO: Zen Spa Casanare (spa, Aguazul — otro municipio) ----
             Negocio zen = negocio("Zen Spa Casanare", "SPA", "(608) 789 0123", "Casanare",
                     "Cll 10 # 9-15, Aguazul", "zen@spa.com", false,
@@ -250,7 +282,10 @@ public class DataSeeder implements CommandLineRunner {
                     metodoPago(zen.getId(), "Nequi", "DIGITAL", "300 777 8899"),
                     metodoPago(zen.getId(), "Efectivo", "EFECTIVO", "Pago en el local")
             ));
+            contador++;
+        }
 
+        if (negocioRepository.findByAdminCorreo("bambu@spa.com").isEmpty()) {
             // ---- 8. NUEVO: Bambú Spa (spa, Yopal, otro sector) ----
             Negocio bambu = negocio("Bambú Spa", "SPA", "(608) 890 1234", "Casanare",
                     "Cra 30 # 5-60, Yopal", "bambu@spa.com", false,
@@ -273,7 +308,10 @@ public class DataSeeder implements CommandLineRunner {
                     metodoPago(bambu.getId(), "Bancolombia", "DIGITAL", "Ahorros ****9922"),
                     metodoPago(bambu.getId(), "Efectivo", "EFECTIVO", "Pago en el local")
             ));
+            contador++;
+        }
 
+        if (negocioRepository.findByAdminCorreo("pielperfecta@correo.com").isEmpty()) {
             // ---- 9. NUEVO: Piel Perfecta Estética (estética, Yopal, otro sector) ----
             Negocio pielPerfecta = negocio("Piel Perfecta Estética", "ESTETICA", "(608) 901 2345", "Casanare",
                     "Cll 15 # 21-10, Yopal", "pielperfecta@correo.com", true,
@@ -297,7 +335,10 @@ public class DataSeeder implements CommandLineRunner {
                     metodoPago(pielPerfecta.getId(), "Efectivo", "EFECTIVO", "Pago en el local")
             ));
             resenaRepository.save(resena(pielPerfecta.getId(), "Andrés Felipe", "andres@correo.com", 5, "Mi piel quedó increíble, muy profesionales.", "27 abril"));
+            contador++;
+        }
 
+        if (negocioRepository.findByAdminCorreo("renova@correo.com").isEmpty()) {
             // ---- 10. NUEVO: Renova Estética Integral (estética, Villanueva — otro municipio) ----
             Negocio renova = negocio("Renova Estética Integral", "ESTETICA", "(608) 012 3456", "Casanare",
                     "Cll 6 # 7-20, Villanueva", "renova@correo.com", false,
@@ -320,7 +361,10 @@ public class DataSeeder implements CommandLineRunner {
                     metodoPago(renova.getId(), "Bancolombia", "DIGITAL", "Ahorros ****5544"),
                     metodoPago(renova.getId(), "Efectivo", "EFECTIVO", "Pago en el local")
             ));
+            contador++;
         }
+
+        return contador;
     }
 
     private Usuario usuario(String nombre, String correo, String passwordPlano, String rol) {
