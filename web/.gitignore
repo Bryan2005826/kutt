@@ -68,6 +68,5 @@ node_modules/
 # dataconnect generated files
 .dataconnect
 
-# Build y caché de Angular (no van al repo)
 /dist
 /.angular

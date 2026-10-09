@@ -1,0 +1,56 @@
+<div class="ticket-shell">
+  <header class="ticket-top">
+    <span class="ticket-mark">K</span> Kutt
+  </header>
+
+  <main class="ticket-main" *ngIf="item() as it; else sinTicket">
+    <section class="ticket-card">
+      <img class="ticket-logo" *ngIf="negocio()?.logoUrl" [src]="negocio()!.logoUrl" alt="Logo del negocio">
+      <p class="ticket-negocio" *ngIf="negocio()">{{ negocio()!.nombre }}</p>
+      <p class="ticket-tipo">{{ tipo === 'cita' ? 'Ticket de cita' : 'Comprobante de compra' }}</p>
+
+      <span class="ticket-estado" [class.ok]="pagado()" [class.pendiente]="!pagado()">
+        {{ pagado() ? '✓ Pagado' : (it.tipoQr === 'TICKET' ? '🎫 Pago en efectivo en el local' : 'Pago pendiente') }}
+      </span>
+
+      <p class="ticket-total">{{ formatPrecio(it.total) }}</p>
+
+      <dl class="ticket-datos">
+        <div><dt>Referencia</dt><dd>{{ referencia() }}</dd></div>
+        <div><dt>Cliente</dt><dd>{{ it.cliente }}</dd></div>
+
+        <ng-container *ngIf="cita() as c">
+          <div><dt>Servicio</dt><dd>{{ c.servicio }}<span *ngIf="c.adicionales"> + {{ c.adicionales }}</span></dd></div>
+          <div *ngIf="c.barbero"><dt>Atiende</dt><dd>{{ c.barbero }}</dd></div>
+          <div><dt>Fecha y hora</dt><dd>{{ c.fecha }} · {{ c.hora }}</dd></div>
+          <div><dt>Estado de la cita</dt><dd>{{ c.estado }}</dd></div>
+        </ng-container>
+
+        <ng-container *ngIf="venta() as v">
+          <div><dt>Detalle</dt><dd>{{ v.detalle }}</dd></div>
+          <div><dt>Fecha</dt><dd>{{ v.fecha }}</dd></div>
+        </ng-container>
+
+        <div *ngIf="it.metodoPago"><dt>Método de pago</dt><dd>{{ it.metodoPago }}</dd></div>
+        <div *ngIf="negocio()?.direccion"><dt>Dirección</dt><dd>{{ negocio()!.direccion }}</dd></div>
+      </dl>
+
+      <p class="ticket-nota" *ngIf="!pagado() && it.tipoQr === 'TICKET'">
+        Presenta este ticket en el local para pagar.
+      </p>
+    </section>
+  </main>
+
+  <ng-template #sinTicket>
+    <main class="ticket-main">
+      <section class="ticket-card">
+        <p class="ticket-tipo" *ngIf="buscando()">Buscando tu ticket…</p>
+        <ng-container *ngIf="!buscando()">
+          <p class="ticket-negocio">No encontramos este ticket</p>
+          <p class="ticket-nota">Puede que el enlace esté incompleto o que ya no exista.</p>
+          <a routerLink="/descubrir" class="ticket-btn">Ir a Kutt</a>
+        </ng-container>
+      </section>
+    </main>
+  </ng-template>
+</div>

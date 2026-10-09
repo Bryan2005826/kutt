@@ -1,0 +1,48 @@
+:host { display: block; min-height: 100vh; }
+
+.ticket-top {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--surface-border);
+  font-family: var(--font-display); font-size: 16px;
+  display: flex; align-items: center; gap: 8px; color: var(--text);
+}
+.ticket-mark {
+  width: 26px; height: 26px; border-radius: 50%;
+  border: 1.5px solid var(--pink);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 12px; color: var(--pink-bright);
+}
+
+.ticket-main { max-width: 440px; margin: 0 auto; padding: 32px 16px; }
+
+.ticket-card {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  padding: 28px 22px;
+  text-align: center;
+}
+
+.ticket-logo { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; }
+.ticket-negocio { font-family: var(--font-display); font-size: 20px; color: var(--text); margin-bottom: 4px; }
+.ticket-tipo { font-size: 13px; color: var(--text-dim); margin-bottom: 14px; }
+
+.ticket-estado {
+  display: inline-block; padding: 6px 14px; border-radius: 999px;
+  font-size: 13px; font-weight: 600; margin-bottom: 14px;
+}
+.ticket-estado.ok { background: rgba(76,175,125,0.15); color: var(--success); }
+.ticket-estado.pendiente { background: rgba(199,154,75,0.15); color: var(--pink-bright); }
+
+.ticket-total { font-family: var(--font-display); font-size: 38px; color: var(--text); margin-bottom: 18px; }
+
+.ticket-datos { text-align: left; border-top: 1px dashed var(--surface-border); padding-top: 14px; }
+.ticket-datos div { display: flex; justify-content: space-between; gap: 16px; padding: 8px 0; }
+.ticket-datos dt { font-size: 12px; color: var(--text-dim); flex-shrink: 0; }
+.ticket-datos dd { font-size: 14px; color: var(--text); text-align: right; margin: 0; word-break: break-word; }
+
+.ticket-nota { font-size: 13px; color: var(--text-dim); margin-top: 14px; }
+.ticket-btn {
+  display: inline-block; margin-top: 16px; padding: 12px 22px;
+  border: 1px solid var(--pink); border-radius: var(--radius-sm); color: var(--pink-bright);
+}

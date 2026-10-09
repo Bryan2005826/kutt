@@ -8,6 +8,7 @@ import { BookingComponent } from './pages/booking/booking.component';
 import { MyAppointmentsComponent } from './pages/my-appointments/my-appointments.component';
 import { ProductsComponent } from './pages/products/products.component';
 import { PagoComponent } from './pages/pago/pago.component';
+import { TicketComponent } from './pages/ticket/ticket.component';
 import { DescubrirComponent } from './pages/descubrir/descubrir.component';
 import { NegocioPerfilComponent } from './pages/negocio-perfil/negocio-perfil.component';
 import { FavoritosComponent } from './pages/favoritos/favoritos.component';
@@ -42,6 +43,8 @@ export const routes: Routes = [
   { path: 'perfil', component: PerfilUsuarioComponent, canActivate: [clienteGuard] },
   { path: 'mis-citas', component: MyAppointmentsComponent, canActivate: [clienteGuard] },
   { path: 'pagar/:tipo/:id', component: PagoComponent, canActivate: [clienteGuard] },
+  // Pagina publica que se abre al escanear el QR de un pago/ticket (sin login)
+  { path: 'ticket/:tipo/:id', component: TicketComponent },
   { path: 'plataforma', component: PlataformaComponent, canActivate: [superAdminGuard] },
   {
     path: 'dashboard',

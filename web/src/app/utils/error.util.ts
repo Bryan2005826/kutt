@@ -8,10 +8,20 @@
 // nada al usuario. Aqui lo detectamos y mostramos un mensaje humano en su lugar.
 export function mensajeDeError(err: any, mensajePorDefecto: string): string {
   // status 0 = la peticion ni siquiera llego al servidor (sin conexion, backend apagado, CORS, etc.)
+  // Antes este mensaje mencionaba "backend" y "MySQL" — lenguaje de desarrollador que no
+  // le dice nada a un usuario real. Ahora es un mensaje humano y accionable.
   if (err?.status === 0) {
-    return 'No se pudo conectar con el servidor. Verifica que el backend esté corriendo y que MySQL esté encendido.';
+    return 'Ups, no pudimos conectar con Kutt en este momento. Revisa tu conexión a internet e inténtalo de nuevo en unos minutos.';
   }
-  // si el backend SI respondio con un mensaje de texto (por ejemplo "Correo ya registrado"), lo usamos
+  // Cualquier error 5xx es un problema de nuestro lado (configuración faltante, servicio
+  // caído, etc.). Nunca mostramos el detalle tecnico que manda el backend en estos casos
+  // (como "no está configurado en el servidor todavía") porque confunde al usuario; en su
+  // lugar, un mensaje genérico y amable.
+  if (typeof err?.status === 'number' && err.status >= 500) {
+    return 'Ups, algo salió mal de nuestro lado. Inténtalo de nuevo en unos minutos.';
+  }
+  // si el backend SI respondio con un mensaje de texto pensado para el usuario
+  // (por ejemplo "Correo ya registrado" o "Correo o contraseña incorrectos"), lo usamos
   if (typeof err?.error === 'string' && err.error.trim()) {
     return err.error;
   }

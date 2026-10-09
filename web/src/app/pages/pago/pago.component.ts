@@ -79,14 +79,16 @@ export class PagoComponent {
     return '$' + valor.toLocaleString('es-CO');
   }
 
-  // Genera un QR real (imagen) a partir de los datos del pago, usando un
-  // servicio publico y gratuito de generacion de codigos QR. El QR guarda un
-  // texto de referencia del pago/ticket, no procesa dinero real todavia.
+  // Link publico al comprobante de este pago/ticket (pagina /ticket/:tipo/:id).
+  linkTicket(r: any): string {
+    return `${window.location.origin}/ticket/${this.tipo}/${r.id}`;
+  }
+
+  // Genera un QR real (imagen) usando un servicio publico y gratuito. El QR guarda
+  // el LINK al comprobante: al escanearlo, el celular abre una pagina de Kutt con
+  // el detalle del pago/cita (antes guardaba solo texto y el celular lo buscaba en Google).
   qrImageUrl(r: any): string {
-    const referencia = this.tipo === 'cita'
-      ? `KUTT-CITA-${r.id}-${r.total}-${r.metodoPago ?? 'EFECTIVO'}`
-      : `KUTT-VENTA-${r.id}-${r.total}-${r.metodoPago ?? 'EFECTIVO'}`;
-    const datos = encodeURIComponent(referencia);
+    const datos = encodeURIComponent(this.linkTicket(r));
     return `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&data=${datos}`;
   }
 
@@ -102,14 +104,14 @@ export class PagoComponent {
         + `Barbero: ${c.barbero ?? 'Sin preferencia'}\n`
         + `Fecha: ${c.fecha ?? ''} ${c.hora ?? ''}\n`
         + `Total a pagar el día de la cita: ${this.formatPrecio(c.total)}\n`
-        + `Referencia QR: KUTT-CITA-${c.id}`;
+        + `Ticket: ${this.linkTicket(c)}`;
     }
     const v = r as Venta;
     return `Nueva compra de productos en Kutt:\n`
       + `Cliente: ${v.cliente ?? ''}\n`
       + `Detalle: ${v.detalle ?? ''}\n`
       + `Total: ${this.formatPrecio(v.total)}\n`
-      + `Referencia QR: KUTT-VENTA-${v.id}`;
+      + `Comprobante: ${this.linkTicket(v)}`;
   }
 
   private linkWhatsApp(numero: string | undefined | null, r: any): string {

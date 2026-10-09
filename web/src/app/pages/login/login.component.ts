@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, signal } from '@angular/core';
-import { CommonModule, Location } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   slideActual = signal(0);
   private intervalo?: ReturnType<typeof setInterval>;
 
-  constructor(private auth: AuthService, private router: Router, private location: Location) {}
+  constructor(private auth: AuthService, private router: Router) {}
 
   ngOnInit() {
     this.intervalo = setInterval(() => this.siguienteSlide(), 4500);
@@ -48,16 +48,13 @@ export class LoginComponent implements OnInit, OnDestroy {
     if (this.intervalo) clearInterval(this.intervalo);
   }
 
-  // NUEVO: botón "← Volver" arriba de todo, para cuando alguien entra a
-  // /login desde el nav de Descubrir/una cita/etc. y se arrepiente. Si hay
-  // historial de navegación regresamos a la página anterior; si no (ej.
-  // entraron directo por el link), lo mandamos a Descubrir.
+  // Botón "← Volver" arriba de todo. Antes usaba location.back(), pero eso
+  // causaba un ping-pong con las páginas de registro (que siempre regresan a
+  // /login): login -> registro -> "Volver" -> login -> "Volver" -> de nuevo
+  // registro, en bucle. Para evitarlo, "Volver" en el login siempre manda a
+  // un destino fijo (Descubrir), sin depender del historial del navegador.
   volver() {
-    if (window.history.length > 1) {
-      this.location.back();
-    } else {
-      this.router.navigate(['/descubrir']);
-    }
+    this.router.navigate(['/descubrir']);
   }
 
   siguienteSlide() {
