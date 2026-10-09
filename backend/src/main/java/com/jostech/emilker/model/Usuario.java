@@ -20,17 +20,6 @@ public class Usuario {
     // CLIENTE, ADMIN_NEGOCIO o SUPER_ADMIN (este \u00faltimo es el due\u00f1o de la plataforma Kutt)
     private String rol;
 
-    // ---- CU: recuperar contrase\u00f1a olvidada ----
-    // Token de un solo uso que se manda por correo cuando alguien pide restablecer
-    // su contrase\u00f1a. Queda en null la mayor parte del tiempo; solo tiene valor
-    // mientras hay una solicitud de restablecimiento pendiente y vigente.
-    @Column(unique = true)
-    private String resetToken;
-
-    // Momento exacto en el que el token de arriba deja de ser v\u00e1lido (vida corta,
-    // igual que cualquier link de "restablecer contrase\u00f1a" de un sistema real).
-    private java.time.Instant resetTokenExpira;
-
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -46,9 +35,5 @@ public class Usuario {
     public String getRol() { return rol; }
     public void setRol(String rol) { this.rol = rol; }
 
-    public String getResetToken() { return resetToken; }
-    public void setResetToken(String resetToken) { this.resetToken = resetToken; }
 
-    public java.time.Instant getResetTokenExpira() { return resetTokenExpira; }
-    public void setResetTokenExpira(java.time.Instant resetTokenExpira) { this.resetTokenExpira = resetTokenExpira; }
 }

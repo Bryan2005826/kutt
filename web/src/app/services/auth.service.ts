@@ -121,19 +121,6 @@ export class AuthService {
     });
   }
 
-  // CU: recuperar contraseña olvidada — paso 1, pedir el link por correo.
-  // El backend siempre responde el mismo mensaje exista o no esa cuenta
-  // (para no revelar qué correos están registrados), así que aquí no hay
-  // un "error" real salvo que el servidor esté caído.
-  solicitarRecuperacion(correo: string): Observable<string> {
-    return this.http.post(`${this.api}/recuperar`, { correo }, { responseType: 'text' });
-  }
-
-  // CU: recuperar contraseña olvidada — paso 2, token del link + contraseña nueva.
-  restablecerPassword(token: string, nuevaPassword: string): Observable<string> {
-    return this.http.post(`${this.api}/restablecer`, { token, nuevaPassword }, { responseType: 'text' });
-  }
-
   logout() {
     localStorage.removeItem('kutt_token');
     localStorage.removeItem('kutt_usuario');

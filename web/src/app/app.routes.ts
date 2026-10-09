@@ -2,8 +2,6 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './pages/login/login.component';
 import { RegistroUsuarioComponent } from './pages/registro-usuario/registro-usuario.component';
 import { RegistroNegocioComponent } from './pages/registro-negocio/registro-negocio.component';
-import { OlvidePasswordComponent } from './pages/olvide-password/olvide-password.component';
-import { RestablecerPasswordComponent } from './pages/restablecer-password/restablecer-password.component';
 import { BookingComponent } from './pages/booking/booking.component';
 import { MyAppointmentsComponent } from './pages/my-appointments/my-appointments.component';
 import { ProductsComponent } from './pages/products/products.component';
@@ -32,8 +30,6 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'registro/usuario', component: RegistroUsuarioComponent },
   { path: 'registro/negocio', component: RegistroNegocioComponent },
-  { path: 'olvide-password', component: OlvidePasswordComponent },
-  { path: 'restablecer-password', component: RestablecerPasswordComponent },
   { path: 'descubrir', component: DescubrirComponent },
   { path: 'negocio/:id', component: NegocioPerfilComponent },
   // Multi-tenant: agendar y ver productos siempre es DENTRO de un negocio concreto

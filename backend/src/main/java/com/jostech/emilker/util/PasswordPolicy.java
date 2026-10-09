@@ -2,7 +2,7 @@ package com.jostech.emilker.util;
 
 import java.util.regex.Pattern;
 
-// Política de contraseñas del sistema (CU-02 / CU: recuperar contraseña).
+// Política de contraseñas del sistema (CU-02).
 // Se valida aquí, en el backend, porque la validación del frontend es solo
 // para dar feedback rápido al usuario; la que de verdad protege los datos
 // es esta, ya que el frontend se puede saltar llamando directo a la API.
