@@ -1,0 +1,51 @@
+KUTT - PASOS PARA SUBIR TODO (ejecutar en este orden)
+=====================================================
+
+Negocios reales que quedan cargados (los 10 de prueba se borran):
+  1. Kenia Brows & Lashes     2. Barbers Estudio     3. Zarzamora
+  4. Mekatos Colpaz           5. PosArt Dulces Mordiscos
+(Los correos y contrasenas estan en el chat con Claude; no se guardan aqui
+ para que no queden en GitHub.)
+
+PASO 1 - Subir el backend (Render)
+----------------------------------
+  cd C:\Users\Cxstro\Desktop\kutt
+  git add .
+  git commit -m "Negocios reales y limpieza de demo"
+  git push
+En Render: abrir kutt-backend y esperar a que diga "Live".
+En Render > Environment: tener la variable SEED_KEY (cualquier valor dificil).
+
+PASO 2 - Subir el frontend (Firebase)
+-------------------------------------
+  cd C:\Users\Cxstro\Desktop\kutt\web
+  npx ng build
+  firebase deploy --only hosting
+
+PASO 3 - Cargar los negocios en la base de datos (elegir UNA opcion)
+--------------------------------------------------------------------
+OPCION A (recomendada): script cargar-negocios.ps1 (se entrega aparte)
+  1. Abrir en el navegador y esperar a que cargue (despierta Render):
+       https://kutt-backend-94sz.onrender.com/api/negocios
+  2. Clic derecho en cargar-negocios.ps1 > "Ejecutar con PowerShell"
+  3. Pegar el valor de SEED_KEY. Al final debe decir, en verde:
+       Negocios demo eliminados: 10 | Negocios reales creados: 5
+  4. Borrar el script y borrar SEED_KEY de Render.
+
+OPCION B: base de datos lista en SQL  ->  datos\negocios-reales.sql
+  1. Abrir la base de Aiven con DBeaver (o MySQL Workbench) con los datos
+     de conexion de Aiven (host, puerto, usuario, contrasena, SSL requerido).
+  2. Abrir datos\negocios-reales.sql y ejecutarlo completo.
+  3. No hace falta el script ni SEED_KEY. Se puede ejecutar varias veces.
+  (Las ubicaciones del mapa quedan aproximadas: el admin las afina en
+   Ajustes > Mi negocio.)
+
+PASO 4 - Probar
+---------------
+  Abrir https://kutt-8ba8f.web.app con Ctrl+Shift+F5 (o ventana de incognito).
+  Deben verse los 5 negocios. Entrar con uno, por ejemplo
+  el correo y clave de cualquiera de los 5
+
+SI LA PAGINA CARGA PERO NO MUESTRA NEGOCIOS: Render estaba dormido.
+Abrir https://kutt-backend-94sz.onrender.com/api/negocios, esperar 1 minuto
+y recargar la pagina.
