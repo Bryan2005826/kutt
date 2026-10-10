@@ -59,7 +59,7 @@ export class ReportesComponent {
     const url = URL.createObjectURL(blob);
     const enlace = document.createElement('a');
     enlace.href = url;
-    enlace.download = 'ventas-emilker.csv';
+    enlace.download = 'ventas-kutt.csv';
     enlace.click();
     URL.revokeObjectURL(url);
   }

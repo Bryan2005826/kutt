@@ -1,17 +1,16 @@
-import { Component, OnDestroy, OnInit, signal } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { mensajeDeError } from '../../utils/error.util';
+import { RecaptchaWidget } from '../../utils/recaptcha.util';
 
 interface SlideCarrusel {
   imagen: string;
   titulo: string;
   detalle: string;
 }
-
-declare var grecaptcha: any; // NUEVO — variable global que carga el script de Google
 
 @Component({
   selector: 'app-login',
@@ -20,7 +19,8 @@ declare var grecaptcha: any; // NUEVO — variable global que carga el script de
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
+  private recaptcha = new RecaptchaWidget();
   mostrarRoles = signal(false);
   cargando = signal(false);
   error = signal<string | null>(null);
@@ -38,13 +38,18 @@ export class LoginComponent implements OnInit, OnDestroy {
   slideActual = signal(0);
   private intervalo?: ReturnType<typeof setInterval>;
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(private auth: AuthService, private router: Router, private host: ElementRef<HTMLElement>) {}
 
   ngOnInit() {
     this.intervalo = setInterval(() => this.siguienteSlide(), 4500);
   }
 
+  ngAfterViewInit() {
+    this.recaptcha.montar(this.host.nativeElement.querySelector('.g-recaptcha'));
+  }
+
   ngOnDestroy() {
+    this.recaptcha.destruir();
     if (this.intervalo) clearInterval(this.intervalo);
   }
 
@@ -77,7 +82,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     // NUEVO: validar reCAPTCHA antes de llamar al backend
-    const recaptchaToken = typeof grecaptcha !== 'undefined' ? grecaptcha.getResponse() : '';
+    const recaptchaToken = this.recaptcha.respuesta();
     if (!recaptchaToken) {
       this.error.set('Por favor marca el reCAPTCHA antes de continuar.');
       return;
@@ -93,7 +98,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.router.navigate([destino]);
       },
       error: err => {
-        if (typeof grecaptcha !== 'undefined') grecaptcha.reset(); // NUEVO
+        this.recaptcha.reiniciar();
         this.cargando.set(false);
         this.error.set(mensajeDeError(err, 'Correo o contraseña incorrectos.'));
       }

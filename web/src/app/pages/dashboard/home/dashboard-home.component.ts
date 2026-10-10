@@ -1,4 +1,4 @@
-import { Component, computed } from '@angular/core';
+import { Component, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { DataService } from '../../../services/data.service';
@@ -10,8 +10,14 @@ import { DataService } from '../../../services/data.service';
   templateUrl: './dashboard-home.component.html',
   styleUrl: './dashboard-home.component.css'
 })
-export class DashboardHomeComponent {
+export class DashboardHomeComponent implements OnInit {
+  nombreNegocio = signal('');
+
   constructor(public data: DataService) {}
+
+  ngOnInit() {
+    this.data.cargarMiNegocio(n => this.nombreNegocio.set(n.nombre));
+  }
 
   citasActivas = computed(() => this.data.citas().filter(c => c.estado !== 'Cancelada'));
   ventasHoy = computed(() => this.data.ventas().reduce((sum, v) => sum + v.total, 0));

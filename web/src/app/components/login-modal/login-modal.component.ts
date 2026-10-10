@@ -1,11 +1,10 @@
-import { Component, EventEmitter, Output, signal } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Output, signal, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { mensajeDeError } from '../../utils/error.util';
-
-declare var grecaptcha: any;
+import { RecaptchaWidget } from '../../utils/recaptcha.util';
 
 // Modal ligero de inicio de sesion que se puede abrir encima de cualquier
 // pagina (Descubrir, el perfil de un negocio, agendar cita, comprar
@@ -19,7 +18,8 @@ declare var grecaptcha: any;
   templateUrl: './login-modal.component.html',
   styleUrl: './login-modal.component.css'
 })
-export class LoginModalComponent {
+export class LoginModalComponent implements AfterViewInit, OnDestroy {
+  private recaptcha = new RecaptchaWidget();
   @Output() exito = new EventEmitter<void>();
   @Output() cerrar = new EventEmitter<void>();
 
@@ -28,7 +28,15 @@ export class LoginModalComponent {
   cargando = signal(false);
   error = signal<string | null>(null);
 
-  constructor(private auth: AuthService) {}
+  constructor(private auth: AuthService, private host: ElementRef<HTMLElement>) {}
+
+  ngAfterViewInit() {
+    this.recaptcha.montar(this.host.nativeElement.querySelector('.g-recaptcha'));
+  }
+
+  ngOnDestroy() {
+    this.recaptcha.destruir();
+  }
 
   cerrarModal() {
     this.cerrar.emit();
@@ -40,7 +48,7 @@ export class LoginModalComponent {
       return;
     }
 
-    const recaptchaToken = typeof grecaptcha !== 'undefined' ? grecaptcha.getResponse() : '';
+    const recaptchaToken = this.recaptcha.respuesta();
 
     this.error.set(null);
     this.cargando.set(true);
@@ -50,7 +58,7 @@ export class LoginModalComponent {
         this.exito.emit();
       },
       error: err => {
-        if (typeof grecaptcha !== 'undefined') grecaptcha.reset();
+        this.recaptcha.reiniciar();
         this.cargando.set(false);
         this.error.set(mensajeDeError(err, 'Correo o contraseña incorrectos.'));
       }

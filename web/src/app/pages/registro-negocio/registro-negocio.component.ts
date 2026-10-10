@@ -1,14 +1,13 @@
-import { Component, signal } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { DataService } from '../../services/data.service';
 import { mensajeDeError } from '../../utils/error.util';
+import { RecaptchaWidget } from '../../utils/recaptcha.util';
 import { errorDePassword } from '../../utils/password.util';
 import { TerminosCondicionesComponent } from '../../components/terminos-condiciones/terminos-condiciones.component';
-
-declare var grecaptcha: any;
 
 @Component({
   selector: 'app-registro-negocio',
@@ -17,7 +16,8 @@ declare var grecaptcha: any;
   templateUrl: './registro-negocio.component.html',
   styleUrl: './registro-negocio.component.css'
 })
-export class RegistroNegocioComponent {
+export class RegistroNegocioComponent implements AfterViewInit, OnDestroy {
+  private recaptcha = new RecaptchaWidget();
   nombre = '';
   correo = '';
   password = '';
@@ -36,7 +36,15 @@ export class RegistroNegocioComponent {
   error = signal<string | null>(null);
   private recaptchaToken = '';
 
-  constructor(private auth: AuthService, private data: DataService, private router: Router) {}
+  constructor(private auth: AuthService, private data: DataService, private router: Router, private host: ElementRef<HTMLElement>) {}
+
+  ngAfterViewInit() {
+    this.recaptcha.montar(this.host.nativeElement.querySelector('.g-recaptcha'));
+  }
+
+  ngOnDestroy() {
+    this.recaptcha.destruir();
+  }
 
   continuar() {
     if (!this.nombre || !this.correo || !this.password || !this.nombreNegocio) {
@@ -57,7 +65,7 @@ export class RegistroNegocioComponent {
     }
 
     // Política de seguridad: reCAPTCHA también al registrar un negocio.
-    this.recaptchaToken = typeof grecaptcha !== 'undefined' ? grecaptcha.getResponse() : '';
+    this.recaptchaToken = this.recaptcha.respuesta();
     if (!this.recaptchaToken) {
       this.error.set('Por favor marca el reCAPTCHA antes de continuar.');
       return;
@@ -101,7 +109,7 @@ export class RegistroNegocioComponent {
         this.router.navigate(['/dashboard']);
       },
       error: err => {
-        if (typeof grecaptcha !== 'undefined') grecaptcha.reset();
+        this.recaptcha.reiniciar();
         this.cargando.set(false);
         this.error.set(mensajeDeError(err, 'No se pudo crear el negocio.'));
       }

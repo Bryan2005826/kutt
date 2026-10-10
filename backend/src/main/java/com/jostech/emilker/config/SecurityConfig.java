@@ -51,7 +51,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/clientes/asegurar").permitAll()
                 .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
                 // Protegido por clave secreta (SEED_KEY) dentro del propio controlador, no por rol
-                .requestMatchers(HttpMethod.POST, "/api/admin/sembrar-demo").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/admin/cargar-negocios").permitAll()
 
                 // Panel exclusivo del dueno de la plataforma Kutt (no de un negocio en particular);
                 // va antes del permitAll de GET para que quede protegido tambien en lectura

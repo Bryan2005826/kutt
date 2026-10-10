@@ -17,7 +17,7 @@
 
     <p class="modal-error" *ngIf="error()">{{ error() }}</p>
 
-    <div class="g-recaptcha" data-sitekey="6LeradAtAAAAAODAjjHylub4EuGnF9SvR1k6R4kN"></div>
+    <div class="g-recaptcha"></div>
 
     <button class="btn-gold" [disabled]="cargando()" (click)="entrar()">
       {{ cargando() ? 'Entrando...' : 'Entrar' }}

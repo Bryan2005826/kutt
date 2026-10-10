@@ -1,13 +1,12 @@
-import { Component, signal } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { mensajeDeError } from '../../utils/error.util';
+import { RecaptchaWidget } from '../../utils/recaptcha.util';
 import { errorDePassword } from '../../utils/password.util';
 import { TerminosCondicionesComponent } from '../../components/terminos-condiciones/terminos-condiciones.component';
-
-declare var grecaptcha: any;
 
 @Component({
   selector: 'app-registro-usuario',
@@ -16,7 +15,8 @@ declare var grecaptcha: any;
   templateUrl: './registro-usuario.component.html',
   styleUrl: './registro-usuario.component.css'
 })
-export class RegistroUsuarioComponent {
+export class RegistroUsuarioComponent implements AfterViewInit, OnDestroy {
+  private recaptcha = new RecaptchaWidget();
   nombre = '';
   apellidos = '';
   correo = '';
@@ -34,7 +34,15 @@ export class RegistroUsuarioComponent {
   cargando = signal(false);
   error = signal<string | null>(null);
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(private auth: AuthService, private router: Router, private host: ElementRef<HTMLElement>) {}
+
+  ngAfterViewInit() {
+    this.recaptcha.montar(this.host.nativeElement.querySelector('.g-recaptcha'));
+  }
+
+  ngOnDestroy() {
+    this.recaptcha.destruir();
+  }
 
   crearCuenta() {
     if (!this.nombre || !this.apellidos || !this.correo || !this.password) {
@@ -55,7 +63,7 @@ export class RegistroUsuarioComponent {
     }
 
     // Política de seguridad: reCAPTCHA también al registrarse, igual que en el login.
-    const recaptchaToken = typeof grecaptcha !== 'undefined' ? grecaptcha.getResponse() : '';
+    const recaptchaToken = this.recaptcha.respuesta();
     if (!recaptchaToken) {
       this.error.set('Por favor marca el reCAPTCHA antes de continuar.');
       return;
@@ -84,18 +92,10 @@ export class RegistroUsuarioComponent {
         this.router.navigate(['/descubrir']);
       },
       error: err => {
-        if (typeof grecaptcha !== 'undefined') grecaptcha.reset();
+        this.recaptcha.reiniciar();
         this.cargando.set(false);
         this.error.set(mensajeDeError(err, 'No se pudo crear la cuenta.'));
       }
     });
-  }
-
-  continuarConGoogle() {
-    this.error.set('El acceso con Google se conectará próximamente. Regístrate con tu correo por ahora.');
-  }
-
-  continuarConFacebook() {
-    this.error.set('El acceso con Facebook se conectará próximamente. Regístrate con tu correo por ahora.');
   }
 }

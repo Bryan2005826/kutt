@@ -3,9 +3,6 @@
     <a routerLink="/login" class="kutt-back">← Volver</a>
     <h2>Registro de Usuario</h2>
 
-    <button class="kutt-btn-outline" (click)="continuarConGoogle()">Continuar con Google</button>
-    <button class="kutt-btn-outline" (click)="continuarConFacebook()">Continuar con Facebook</button>
-    <div class="kutt-divider"><span>o regístrate con tu correo</span></div>
 
     <div class="kutt-field"><label>Nombre</label><input [(ngModel)]="nombre" name="nombre"></div>
     <div class="kutt-field"><label>Apellidos</label><input [(ngModel)]="apellidos" name="apellidos"></div>
@@ -43,7 +40,7 @@
 
     <p class="kutt-error" *ngIf="error()">{{ error() }}</p>
 
-    <div class="g-recaptcha" data-sitekey="6LeradAtAAAAAODAjjHylub4EuGnF9SvR1k6R4kN"></div>
+    <div class="g-recaptcha"></div>
 
     <button class="kutt-btn-primary" [disabled]="cargando()" (click)="crearCuenta()">
       {{ cargando() ? 'Creando cuenta...' : 'Crear cuenta' }}

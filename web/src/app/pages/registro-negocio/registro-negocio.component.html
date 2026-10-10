@@ -39,7 +39,7 @@
 
     <p class="kutt-error" *ngIf="error()">{{ error() }}</p>
 
-    <div class="g-recaptcha" data-sitekey="6LeradAtAAAAAODAjjHylub4EuGnF9SvR1k6R4kN"></div>
+    <div class="g-recaptcha"></div>
 
     <button class="kutt-btn-primary" [disabled]="cargando()" (click)="continuar()">
       {{ cargando() ? 'Creando negocio...' : 'Continuar' }}
